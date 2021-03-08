@@ -1,6 +1,6 @@
 {
   "name": "jvnotes",
-  "version": "0.0.0",
+  "version": "0.0.2",
   "description": "Manipulate and export simple markdown notes (with frontmatter)",
   "main": "dist/index.js",
   "files": [
