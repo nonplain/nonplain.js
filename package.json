@@ -2,6 +2,10 @@
   "name": "jvnotes",
   "version": "0.0.5",
   "description": "Manipulate and export simple markdown notes (with frontmatter)",
+  "homepage": "https://github.com/jaredgorski/jvnotes#readme",
+  "repository": "github:jaredgorski/jvnotes",
+  "author": "Jared Gorski <jaredgorski6@gmail.com>",
+  "license": "MIT",
   "main": "dist/index.js",
   "files": [
     "dist"
@@ -14,8 +18,6 @@
     "lint": "eslint src --ext .ts",
     "lint:fix": "yarn lint --fix"
   },
-  "author": "Jared Gorski <jaredgorski6@gmail.com>",
-  "license": "MIT",
   "dependencies": {
     "glob": "^7.1.6",
     "js-yaml": "^3.14.1"
