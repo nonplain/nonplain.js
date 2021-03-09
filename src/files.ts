@@ -1,39 +1,30 @@
 import fs, { PathLike } from 'fs';
 import glob from 'glob';
-import os from 'os';
 import path from 'path';
 
-import Note from './note';
-import { Export2JSONOptions, NoteData, Transform } from './types';
+import { File } from './file';
+import { Export2JSONOptions, FileData, Transform } from './types';
+import { formatPath } from './utils/path';
 
-type FilterNoteFilepathsFn = (filename: string) => boolean;
+type FilterFilepathsFn = (filename: string) => boolean;
 
 export type LoadOptions = {
-  filterNoteFilepaths?: FilterNoteFilepathsFn;
+  filterFilepaths?: FilterFilepathsFn;
   overwrite?: boolean;
   transform?: Transform;
 }
 
-type MapCallbackFn = (currentValue: NoteData, index: number) => unknown;
+type MapCallbackFn = (currentValue: FileData, index: number) => unknown;
 
-type ReduceCallbackFn = (accumulator: unknown, currentValue: NoteData, index: number) => unknown;
+type ReduceCallbackFn = (accumulator: unknown, currentValue: FileData, index: number) => unknown;
 
-function formatPath(src: string): string {
-  src = path.normalize(src);
-  if (src[0] === '~') {
-    src = path.join(os.homedir(), src.slice(1));
-  }
-
-  return src;
-}
-
-export default class Notes {
-  private notes: Note[];
+export class Files {
+  private files: File[];
 
   srcSet: Set<string>;
 
   constructor() {
-    this.notes = [];
+    this.files = [];
     this.srcSet = new Set();
   }
 
@@ -41,15 +32,15 @@ export default class Notes {
     this.addSrc(src);
     src = formatPath(src);
 
-    const { filterNoteFilepaths, overwrite = false, transform } = options || {};
-    const validFilterNoteFilepaths = filterNoteFilepaths && typeof filterNoteFilepaths === 'function';
+    const { filterFilepaths, overwrite = false, transform } = options || {};
+    const validFilterFilepaths = filterFilepaths && typeof filterFilepaths === 'function';
 
     if (overwrite) {
       this.clear();
     }
 
-    if (filterNoteFilepaths && !validFilterNoteFilepaths) {
-      throw new Error('TypeError: filterNoteFilepaths must be a function');
+    if (filterFilepaths && !validFilterFilepaths) {
+      throw new Error('TypeError: filterFilepaths must be a function');
     }
 
     let srcFilepaths = glob.hasMagic(src)
@@ -57,16 +48,16 @@ export default class Notes {
       : await fs.promises.readdir(src)
         .then((filenames) => filenames.map((filename) => path.join(src, filename)));
 
-    if (validFilterNoteFilepaths) {
-      srcFilepaths = srcFilepaths.filter(filterNoteFilepaths);
+    if (validFilterFilepaths) {
+      srcFilepaths = srcFilepaths.filter(filterFilepaths);
     }
 
-    const newNotes = await Promise.all(
+    const newFiles = await Promise.all(
       srcFilepaths.map(async (filepath) => {
-        const note = new Note();
+        const note = new File();
 
         try {
-          await note.init(filepath, { transform });
+          await note.load(filepath, { transform });
         } catch (err) {
           /* eslint-disable-next-line no-console */
           console.error(`Error while handling file: ${filepath}.\n`, err);
@@ -76,7 +67,7 @@ export default class Notes {
       }),
     ).then((results) => results.filter((x) => !!x));
 
-    this.notes = this.notes.concat(newNotes);
+    this.files = this.files.concat(newFiles);
   }
 
   private addSrc(src: string): void {
@@ -88,8 +79,8 @@ export default class Notes {
   }
 
   async export2JSON(file: PathLike | number, options?: Export2JSONOptions): Promise<void> {
-    if (!this.notes.length) {
-      throw new Error('No notes loaded.');
+    if (!this.files.length) {
+      throw new Error('No files loaded.');
     }
 
     const { transform, space } = options || {};
@@ -99,9 +90,9 @@ export default class Notes {
       throw new Error('TypeError: transform must be a function');
     }
 
-    const notesData = validTransform
-      ? this.notes.map((note) => transform(note.getData()))
-      : this.notes;
+    const filesData = validTransform
+      ? this.files.map((note) => transform(note.getData()))
+      : this.files;
 
     const writeFileOptions = options || {};
     delete writeFileOptions.transform;
@@ -109,7 +100,7 @@ export default class Notes {
 
     await fs.writeFileSync(
       file,
-      JSON.stringify(notesData, null, space),
+      JSON.stringify(filesData, null, space),
       writeFileOptions,
     );
   }
@@ -122,11 +113,11 @@ export default class Notes {
     return this.collect().reduce(callback, initialValue);
   }
 
-  collect(): NoteData[] {
-    return this.notes.map((note) => note.getData());
+  collect(): FileData[] {
+    return this.files.map((note) => note.getData());
   }
 
   transform(transform: Transform): void {
-    this.notes.forEach((note) => note.transform(transform));
+    this.files.forEach((note) => note.transform(transform));
   }
 }

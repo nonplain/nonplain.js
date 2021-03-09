@@ -1,8 +1,8 @@
-export const body = {
+const body = {
   whole: /(?<=^---[^]*?^---\n)[^]*/m,
 };
 
-export const frontmatter = {
+const frontmatter = {
   whole: /^---[^]*?^---/m,
   sansDelimiters: /(?<=^---\n)[^]*?(?=\n^---)/m,
   yaml: {
@@ -10,7 +10,7 @@ export const frontmatter = {
   },
 };
 
-export const links = {
+const links = {
   all: /(\[[^\[\]]*\]\([^\(\)]*\)|\[\[[^\[\]]*\]\])/g,
   markdown: {
     whole: /\[[^\[\]]*\]\([^\(\)]*\)/g,

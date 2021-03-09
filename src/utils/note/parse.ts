@@ -2,16 +2,16 @@ import fs from 'fs';
 import path, { ParsedPath } from 'path';
 import yaml from 'js-yaml';
 
-import { regex } from '..';
+import regex from '../regex';
 import { Metadata } from '../../types';
 
-type ParsedNoteFile = {
+type ParsedFile = {
   file: ParsedPath,
   frontmatter: string,
   body: string,
 };
 
-export async function parseNoteFile(filepath: string): Promise<ParsedNoteFile> {
+export async function parseFile(filepath: string): Promise<ParsedFile> {
   let content = '';
   try {
     content = await fs.readFileSync(filepath, 'utf-8');
@@ -32,9 +32,16 @@ export async function parseNoteFile(filepath: string): Promise<ParsedNoteFile> {
 }
 
 export function parseFrontmatter(content: string): Metadata {
+  const parseJSON = (j: string) => JSON.parse(j);
+  const parseYAML = (y: string) => yaml.load(y);
+
   try {
-    return yaml.load(content);
-  } catch (err) {
-    throw new Error('ParseError: Could not parse frontmatter.');
+    return parseJSON(content);
+  } catch (e1) {
+    try {
+      return parseYAML(content);
+    } catch (e2) {
+      throw new Error('ParseError: Could not parse frontmatter.');
+    }
   }
 }

@@ -7,40 +7,39 @@ import os from 'os';
 /* @ts-ignore */
 import path, { ParsedPath } from 'path';
 
-import Notes, { Link, Metadata, NoteData } from '../dist';
-import { backlinker } from '../dist/tools';
+import { Files, Metadata, FileData } from '../dist';
 
 import {
-  notes as expectedNotes,
-  withTransform as expectedNotesWithTransform,
-} from './fixtures/notes/expected';
+  files as expectedFiles,
+  withTransform as expectedFilesWithTransform,
+} from './fixtures/files/expected';
 
-describe('Notes', () => {
+describe('Files', () => {
   test('initializes with empty files list', () => {
-    const notes = new Notes();
-    expect(notes.collect()).toEqual([]);
+    const files = new Files();
+    expect(files.collect()).toEqual([]);
   });
 
   describe('load()', () => {
     test('loads files from filepath', async () => {
-      const filepath = path.join(__dirname, './fixtures/notes/notes');
-      const notes = new Notes();
+      const filepath = path.join(__dirname, './fixtures/files/src');
+      const files = new Files();
 
-      await notes.load(filepath);
-      expect(notes.collect()).toEqual(expectedNotes);
+      await files.load(filepath);
+      expect(files.collect()).toEqual(expectedFiles);
     });
 
     test('loads files from `/**/*.md` glob', async () => {
-      const glob = path.join(__dirname, './fixtures/notes/notes/**/*.md');
-      const notes = new Notes();
+      const glob = path.join(__dirname, './fixtures/files/src/**/*.md');
+      const files = new Files();
 
-      await notes.load(glob);
-      expect(notes.collect()).toEqual(expectedNotes);
+      await files.load(glob);
+      expect(files.collect()).toEqual(expectedFiles);
     });
 
     test('loads files with initial transform map', async () => {
-      const glob = path.join(__dirname, './fixtures/notes/notes/**/*.md');
-      const notes = new Notes();
+      const glob = path.join(__dirname, './fixtures/files/src/**/*.md');
+      const files = new Files();
 
       const transform = {
         body: (body: string) => body.replace('multiple lines', 'an additional line'),
@@ -50,15 +49,15 @@ describe('Notes', () => {
         },
       };
 
-      await notes.load(glob, { transform });
-      expect(notes.collect()).toEqual(expectedNotesWithTransform);
+      await files.load(glob, { transform });
+      expect(files.collect()).toEqual(expectedFilesWithTransform);
     });
 
     test('loads files with initial transform function', async () => {
-      const glob = path.join(__dirname, './fixtures/notes/notes/**/*.md');
-      const notes = new Notes();
+      const glob = path.join(__dirname, './fixtures/files/src/**/*.md');
+      const files = new Files();
 
-      const transform = ({ body, metadata }: NoteData) => ({
+      const transform = ({ body, metadata }: FileData) => ({
         body: body.replace('multiple lines', 'an additional line'),
         metadata: {
           ...metadata,
@@ -70,18 +69,18 @@ describe('Notes', () => {
         },
       });
 
-      await notes.load(glob, { transform });
-      expect(notes.collect()).toEqual(expectedNotesWithTransform);
+      await files.load(glob, { transform });
+      expect(files.collect()).toEqual(expectedFilesWithTransform);
     });
   });
 
   describe('export2JSON()', () => {
-    const notes = new Notes();
+    const files = new Files();
     let exportDestination: string;
 
     beforeAll(async () => {
-      const glob = path.join(__dirname, './fixtures/notes/notes/**/*.md');
-      await notes.load(glob);
+      const glob = path.join(__dirname, './fixtures/files/src/**/*.md');
+      await files.load(glob);
     });
 
     beforeEach(async () => {
@@ -90,13 +89,13 @@ describe('Notes', () => {
     });
 
     test('exports file data to JSON', async () => {
-      await notes.export2JSON(exportDestination);
+      await files.export2JSON(exportDestination);
       const exportContent = JSON.parse(await fs.readFileSync(exportDestination).toString());
-      expect(exportContent).toEqual(JSON.parse(JSON.stringify(expectedNotes)));
+      expect(exportContent).toEqual(JSON.parse(JSON.stringify(expectedFiles)));
     });
 
     test('exports file data to JSON with transform', async () => {
-      const transform = ({ body, metadata }: NoteData) => ({
+      const transform = ({ body, metadata }: FileData) => ({
         body: body.replace('multiple lines', 'an additional line'),
         metadata: {
           ...metadata,
@@ -108,9 +107,9 @@ describe('Notes', () => {
         },
       });
 
-      await notes.export2JSON(exportDestination, { transform });
+      await files.export2JSON(exportDestination, { transform });
       const exportContent = JSON.parse(await fs.readFileSync(exportDestination).toString());
-      expect(exportContent).toEqual(JSON.parse(JSON.stringify(expectedNotesWithTransform)));
+      expect(exportContent).toEqual(JSON.parse(JSON.stringify(expectedFilesWithTransform)));
     });
   });
 });

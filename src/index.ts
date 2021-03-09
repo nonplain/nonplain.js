@@ -1,4 +1,3 @@
-import { Notes } from './core';
-
-export default Notes;
-export * from './core';
+export * from './files';
+export * from './file';
+export * from './types';

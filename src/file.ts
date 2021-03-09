@@ -4,26 +4,26 @@ import {
   handleTransformFn,
   handleTransformFnOrMap,
   parseFrontmatter,
-  parseNoteFile,
+  parseFile,
 } from './utils/note';
 import {
   Export2JSONOptions,
   Metadata,
-  NoteData,
+  FileData,
   Transform,
 } from './types';
 
-type NoteOptions = {
+type FileOptions = {
   transform?: Transform;
 }
 
-export default class Note implements NoteData {
+export class File implements FileData {
   body: string;
 
   metadata: Metadata;
 
-  async init(src: string, options?: NoteOptions): Promise<void> {
-    const { file, frontmatter, body } = await parseNoteFile(src);
+  async load(src: string, options?: FileOptions): Promise<void> {
+    const { file, frontmatter, body } = await parseFile(src);
     const parsedFrontmatter = parseFrontmatter(frontmatter);
     const metadata = {
       file,
@@ -59,7 +59,7 @@ export default class Note implements NoteData {
     );
   }
 
-  getData(): NoteData {
+  getData(): FileData {
     return {
       body: this.body,
       metadata: this.metadata,
