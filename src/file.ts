@@ -20,7 +20,7 @@ export default class File implements FileData {
 
   metadata: Metadata;
 
-  async load(src: string): Promise<void> {
+  async load(src: string): Promise<File> {
     const { file, frontmatter, body } = await parseFile(src);
     const parsedFrontmatter = parseFrontmatter(frontmatter);
     const metadata = {
@@ -30,6 +30,8 @@ export default class File implements FileData {
 
     this.body = body;
     this.metadata = metadata;
+
+    return this;
   }
 
   async write(file: PathLike | number, options?: WriteOptions): Promise<void> {
@@ -67,11 +69,15 @@ export default class File implements FileData {
     const writeFileOptions = options || {};
     delete writeFileOptions.transform;
 
-    await fs.writeFileSync(
-      file,
-      writeFileStr,
-      writeFileOptions,
-    );
+    try {
+      await fs.writeFileSync(
+        file,
+        writeFileStr,
+        writeFileOptions,
+      );
+    } catch (err) {
+      throw new Error(`WriteError: error while writing file.\n${err}`);
+    }
   }
 
   async export2JSON(file: PathLike | number, options?: Export2JSONOptions): Promise<void> {
@@ -88,11 +94,15 @@ export default class File implements FileData {
     delete writeFileOptions.transform;
     delete writeFileOptions.space;
 
-    await fs.writeFileSync(
-      file,
-      JSON.stringify(fileData, null, space),
-      writeFileOptions,
-    );
+    try {
+      await fs.writeFileSync(
+        file,
+        JSON.stringify(fileData, null, space),
+        writeFileOptions,
+      );
+    } catch (err) {
+      throw new Error(`WriteError: error while writing file.\n${err}`);
+    }
   }
 
   getData(): FileData {
@@ -102,7 +112,7 @@ export default class File implements FileData {
     };
   }
 
-  transform(transform: Transform): void {
+  transform(transform: Transform): File {
     if (typeof transform === 'function') {
       const { body, metadata } = transform(this.getData());
 
@@ -116,5 +126,7 @@ export default class File implements FileData {
         ? handleTransformFnOrMap<Metadata>(transform.metadata, this.metadata)
         : this.metadata;
     }
+
+    return this;
   }
 }

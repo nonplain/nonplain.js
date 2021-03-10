@@ -21,7 +21,7 @@ export default class Files {
     this.srcSet = new Set();
   }
 
-  async load(src: string, options?: FilesLoadOptions): Promise<void> {
+  async load(src: string, options?: FilesLoadOptions): Promise<Files> {
     this.addSrc(src);
     src = formatPath(src);
 
@@ -63,6 +63,8 @@ export default class Files {
     ).then((results) => results.filter((x) => !!x));
 
     this.files = this.files.concat(newFiles);
+
+    return this;
   }
 
   private addSrc(src: string): void {
@@ -94,11 +96,15 @@ export default class Files {
     delete writeFileOptions.transform;
     delete writeFileOptions.space;
 
-    await fs.writeFileSync(
-      file,
-      JSON.stringify(filesData, null, space),
-      writeFileOptions,
-    );
+    try {
+      await fs.writeFileSync(
+        file,
+        JSON.stringify(filesData, null, space),
+        writeFileOptions,
+      );
+    } catch (err) {
+      throw new Error(`WriteError: error while writing file.\n${err}`);
+    }
   }
 
   map(callback: MapCallbackFn): Object {
@@ -117,7 +123,8 @@ export default class Files {
     return this.files;
   }
 
-  transform(transform: Transform): void {
+  transform(transform: Transform): Files {
     this.files.forEach((file) => file.transform(transform));
+    return this;
   }
 }

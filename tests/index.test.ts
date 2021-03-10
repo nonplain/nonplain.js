@@ -80,10 +80,10 @@ describe('Files', () => {
   });
 
   describe('clear', () => {
+    const glob = path.join(__dirname, './fixtures/files/src/**/*.md');
     const files = new Files();
 
     beforeEach(async () => {
-      const glob = path.join(__dirname, './fixtures/files/src/**/*.md');
       await files.load(glob);
     });
 
@@ -94,11 +94,11 @@ describe('Files', () => {
   });
 
   describe('export2JSON', () => {
+    const glob = path.join(__dirname, './fixtures/files/src/**/*.md');
     const files = new Files();
     let exportDestination: string;
 
     beforeAll(async () => {
-      const glob = path.join(__dirname, './fixtures/files/src/**/*.md');
       await files.load(glob);
     });
 
@@ -133,11 +133,15 @@ describe('Files', () => {
   });
 
   describe('collect', () => {
+    const glob = path.join(__dirname, './fixtures/files/src/**/*.md');
     const files = new Files();
 
     beforeEach(async () => {
-      const glob = path.join(__dirname, './fixtures/files/src/**/*.md');
       await files.load(glob);
+    });
+
+    afterEach(async () => {
+      files.clear();
     });
 
     test('returns array of currently loaded files', async () => {
@@ -146,11 +150,15 @@ describe('Files', () => {
   });
 
   describe('collectInstances', () => {
+    const glob = path.join(__dirname, './fixtures/files/src/**/*.md');
     const files = new Files();
 
     beforeEach(async () => {
-      const glob = path.join(__dirname, './fixtures/files/src/**/*.md');
       await files.load(glob);
+    });
+
+    afterEach(async () => {
+      files.clear();
     });
 
     test('returns array of currently loaded File instances', async () => {
@@ -159,10 +167,10 @@ describe('Files', () => {
   });
 
   describe('map', () => {
+    const glob = path.join(__dirname, './fixtures/files/src/**/*.md');
     const files = new Files();
 
     beforeEach(async () => {
-      const glob = path.join(__dirname, './fixtures/files/src/**/*.md');
       await files.load(glob);
     });
 
@@ -177,10 +185,10 @@ describe('Files', () => {
   });
 
   describe('reduce', () => {
+    const glob = path.join(__dirname, './fixtures/files/src/**/*.md');
     const files = new Files();
 
     beforeEach(async () => {
-      const glob = path.join(__dirname, './fixtures/files/src/**/*.md');
       await files.load(glob);
     });
 
@@ -202,10 +210,10 @@ describe('Files', () => {
   });
 
   describe('transform', () => {
+    const glob = path.join(__dirname, './fixtures/files/src/**/*.md');
     const files = new Files();
 
     beforeEach(async () => {
-      const glob = path.join(__dirname, './fixtures/files/src/**/*.md');
       await files.load(glob);
     });
 
@@ -249,9 +257,7 @@ describe('File', () => {
   describe('load', () => {
     test('loads individual file from filepath', async () => {
       const filepath = path.join(__dirname, './fixtures/files/src/Test file 2.md');
-      const file = new File();
-
-      await file.load(filepath);
+      const file = await new File().load(filepath);
       expect(file.getData()).toEqual(expectedFiles[1]);
     });
   });
@@ -259,14 +265,13 @@ describe('File', () => {
   describe('write', () => {
     test('writes new file with YAML metadata from currently loaded data', async () => {
       const filepath = path.join(__dirname, './fixtures/files/src/Test file 1.md');
-      const file = new File();
+      const file = await new File().load(filepath);
 
       const tmpDir = await fs.mkdtempSync(os.tmpdir());
       const writeDestination = path.join(tmpDir, 'write.md');
 
       const replace = (content: string) => content.replace('T00:00:00.000Z', '');
 
-      await file.load(filepath);
       await file.write(writeDestination, { replace });
       const writeContent = await fs.readFileSync(writeDestination).toString()
       const originalContent = await fs.readFileSync(filepath).toString()
@@ -275,12 +280,11 @@ describe('File', () => {
 
     test('writes new file with JSON metadata from currently loaded data', async () => {
       const filepath = path.join(__dirname, './fixtures/files/src/Test file 2.md');
-      const file = new File();
+      const file = await new File().load(filepath);
 
       const tmpDir = await fs.mkdtempSync(os.tmpdir());
       const writeDestination = path.join(tmpDir, 'write.md');
 
-      await file.load(filepath);
       await file.write(writeDestination, { fmFormat: { format: 'json', space: 2 } });
       const writeContent = await fs.readFileSync(writeDestination).toString()
       const originalContent = await fs.readFileSync(filepath).toString()
@@ -289,12 +293,11 @@ describe('File', () => {
 
     test('writes new file from currently loaded metadata only', async () => {
       const filepath = path.join(__dirname, './fixtures/files/src/Test file 2.md');
-      const file = new File();
+      const file = await new File().load(filepath);
 
       const tmpDir = await fs.mkdtempSync(os.tmpdir());
       const writeDestination = path.join(tmpDir, 'write.md');
 
-      await file.load(filepath);
       await file.write(writeDestination, { body: false, fmFormat: { format: 'json', space: 2 } });
       const writeContent = await fs.readFileSync(writeDestination).toString()
       const originalContent = await fs.readFileSync(filepath).toString()
@@ -304,12 +307,11 @@ describe('File', () => {
 
     test('writes new file from currently loaded body only', async () => {
       const filepath = path.join(__dirname, './fixtures/files/src/Test file 2.md');
-      const file = new File();
+      const file = await new File().load(filepath);
 
       const tmpDir = await fs.mkdtempSync(os.tmpdir());
       const writeDestination = path.join(tmpDir, 'write.md');
 
-      await file.load(filepath);
       await file.write(writeDestination, { metadata: false, fmFormat: { format: 'json', space: 2 } });
       const writeContent = await fs.readFileSync(writeDestination).toString()
       const originalContent = await fs.readFileSync(filepath).toString()
@@ -320,9 +322,8 @@ describe('File', () => {
 
   describe('export2JSON', () => {
     test('exports individual file data to JSON', async () => {
-      const file = new File();
       const filepath = path.join(__dirname, './fixtures/files/src/Test file 2.md');
-      await file.load(filepath);
+      const file = await new File().load(filepath);
 
       const tmpDir = await fs.mkdtempSync(os.tmpdir());
       const exportDestination = path.join(tmpDir, 'export.json');
@@ -333,9 +334,8 @@ describe('File', () => {
     });
 
     test('exports individual file data to JSON using files.collectInstances() iteration', async () => {
-      const files = new Files();
       const glob = path.join(__dirname, './fixtures/files/src/**/*.md');
-      await files.load(glob);
+      const files = await new Files().load(glob);
 
       let exportDestinations: string[] = [];
       const tmpDir = await fs.mkdtempSync(os.tmpdir());
@@ -360,9 +360,8 @@ describe('File', () => {
     let file: File;
 
     beforeEach(async () => {
-      file = new File();
       const filepath = path.join(__dirname, './fixtures/files/src/Test file 2.md');
-      await file.load(filepath);
+      file = await new File().load(filepath);
     });
 
     test('transforms file with transform map', async () => {
