@@ -10,6 +10,29 @@ Plaintext files are commonly used for notes, code, and documentation. Plaintext 
 
 One primary drawback of using frontmatter in plaintext files is that there are few general-purpose tools for parsing and operating on these files' metadata and body content separately. The goal of nonplain is to make plaintext files with metadata easier.
 
+---
+
+## Contents
+
+- [What this library does](#what-this-library-does)
+- [What frontmatter is](#what-frontmatter-is)
+- [Parsing nonplain files](#parsing-nonplain-files)
+- [Transforming nonplain file data](#transforming-nonplain-file-data)
+- [Exporting nonplain file data](#exporting-nonplain-file-data)
+  - [File.write()](#filewrite)
+  - [export2JSON](#export2json)
+- [Other useful methods](#other-useful-methods)
+  - [Files.clear()](#filesclear)
+  - [Files.collect()](#filescollect)
+  - [Files.map()](#filesmap)
+  - [Files.reduce()](#filesreduce)
+  - [Files.collectInstances()](#filescollectinstances)
+  - [File.getData()](#filegetdata)
+- [Related work](#related-work)
+- [Contributing](#contributing)
+
+---
+
 ## What this library does
 
 The concept is rather simple: define the difference between metadata and body content and parse the file accordingly.
