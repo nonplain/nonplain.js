@@ -134,7 +134,7 @@ const { Files } = require("nonplain");
 //                 "dir": "/path/to/dir",
 //                 "base": "file1.md",
 //                 "ext": ".md",
-//                 "name": "file1",
+//                 "name": "file1"
 //             },
 //             "what is this?": "it's JSON frontmatter",
 //         }
@@ -147,7 +147,7 @@ const { Files } = require("nonplain");
 //                 "dir": "/path/to/dir",
 //                 "base": "file2.md",
 //                 "ext": ".md",
-//                 "name": "file2",
+//                 "name": "file2"
 //             },
 //             "syke": "now it's YAML",
 //         }
@@ -176,7 +176,7 @@ const { File } = require("nonplain");
 //             "dir": "/path/to/dir",
 //             "base": "file.md",
 //             "ext": ".md",
-//             "name": "file",
+//             "name": "file"
 //         },
 //         "course number": "CS231n",
 //         "description": "Convolutional Neural Networks for Visual Recognition",
@@ -312,7 +312,7 @@ Returns all currently loaded files as an array of file data:
 //                 "dir": "/path/to/dir",
 //                 "base": "file1.md",
 //                 "ext": ".md",
-//                 "name": "file1",
+//                 "name": "file1"
 //             },
 //             "what is this?": "it's JSON frontmatter",
 //         }
@@ -325,7 +325,7 @@ Returns all currently loaded files as an array of file data:
 //                 "dir": "/path/to/dir",
 //                 "base": "file2.md",
 //                 "ext": ".md",
-//                 "name": "file2",
+//                 "name": "file2"
 //             },
 //             "syke": "now it's yaml",
 //         }
@@ -376,7 +376,7 @@ Returns the currently loaded file data:
 //             "dir": "/path/to/dir",
 //             "base": "file.md",
 //             "ext": ".md",
-//             "name": "file",
+//             "name": "file"
 //         },
 //         "course number": "CS231n",
 //         "description": "Convolutional Neural Networks for Visual Recognition",
