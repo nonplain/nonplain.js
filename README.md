@@ -67,6 +67,8 @@ It looks like this:
 ... contents of file ...
 ```
 
+or this:
+
 ```
 ---
 syke: now it's YAML
@@ -86,9 +88,13 @@ Using `Files`:
 ```js
 const { Files } = require("nonplain");
 
-const files = Files.load('/path/to/dir/**/*.md'); // you can use a glob or a filepath
+(async () => {
+  const files = new Files()
 
-console.log(files.collect());
+  await files.load('/path/to/dir/**/*.md'); // you can use a glob or a filepath
+
+  console.log(files.collect());
+})()
 
 // Output:
 //
@@ -130,9 +136,13 @@ Using `File`:
 ```js
 const { File } = require("nonplain");
 
-const file = File.load('/path/to/file.md');
+(async () => {
+  const file = new Files()
 
-console.log(file.getData());
+  await file.load('/path/to/file.md');
+
+  console.log(file.getData());
+})()
 
 // Output:
 //
@@ -262,9 +272,13 @@ Clears all currently loaded files from the `Files` instance.
 Returns all currently loaded files as an array of file data:
 
 ```js
-const files = Files.load('/path/to/dir/**/*.md');
+(async () => {
+  const files = new Files()
 
-console.log(files.collect());
+  await files.load('/path/to/dir/**/*.md');
+
+  console.log(files.collect());
+})()
 
 // Output:
 //
@@ -328,9 +342,13 @@ Returns all currently loaded files as an array of `File` instances. Primarily us
 Returns the currently loaded file data:
 
 ```js
-const file = File.load('/path/to/file1.md');
+(async () => {
+  const file = new File()
 
-console.log(file.getData());
+  await file.load('/path/to/file1.md');
+
+  console.log(file.getData());
+})()
 
 // Output:
 //
