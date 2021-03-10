@@ -13,7 +13,7 @@ One primary drawback of using frontmatter in plaintext files is that there are f
 ## Contents
 
 - [What this library does](#what-this-library-does)
-- [What frontmatter is](#what-frontmatter-is)
+- [What a nonplain file is](#what-a-nonplain-file-is)
 - [Parsing nonplain files](#parsing-nonplain-files)
 - [Transforming nonplain file data](#transforming-nonplain-file-data)
 - [Exporting nonplain file data](#exporting-nonplain-file-data)
