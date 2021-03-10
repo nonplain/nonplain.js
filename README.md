@@ -389,7 +389,7 @@ Returns the currently loaded file data:
 
 [[link to toc](#contents)]
 
-Other libraries providing simple, composable tools for working with stuff like markdown links is in the works. Stay tuned for more.
+Other libraries providing simple, composable tools for working with stuff like VimWiki notes are in the works. Stay tuned for more.
 
 ## Contributing
 
