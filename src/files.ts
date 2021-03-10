@@ -1,21 +1,17 @@
 import fs, { PathLike } from 'fs';
 
 import File from './file';
-import { Export2JSONOptions, FileData, Transform } from './types';
+import {
+  Export2JSONOptions,
+  FileData,
+  FilesLoadOptions,
+  MapCallbackFn,
+  ReduceCallbackFn,
+  Transform,
+} from './types';
 import { formatPath, getFilepathsFromSrcOrGlob } from './utils/path';
 
-type FilterFilepathsFn = (filename: string) => boolean;
-
-export type LoadOptions = {
-  filterFilepaths?: FilterFilepathsFn;
-  overwrite?: boolean;
-}
-
-type MapCallbackFn = (currentValue: FileData, index: number) => unknown;
-
-type ReduceCallbackFn = (accumulator: any, currentValue: FileData, index: number) => any;
-
-export class Files {
+export default class Files {
   private files: File[];
 
   srcSet: Set<string>;
@@ -25,7 +21,7 @@ export class Files {
     this.srcSet = new Set();
   }
 
-  async load(src: string, options?: LoadOptions): Promise<void> {
+  async load(src: string, options?: FilesLoadOptions): Promise<void> {
     this.addSrc(src);
     src = formatPath(src);
 

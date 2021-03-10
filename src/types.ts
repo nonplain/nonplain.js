@@ -46,3 +46,14 @@ export type Export2JSONOptions = WriteFileOptions & {
   space?: number;
   transform?: TransformFn<FileData>;
 };
+
+export type FilterFilepathsFn = (filename: string) => boolean;
+
+export type FilesLoadOptions = {
+  filterFilepaths?: FilterFilepathsFn;
+  overwrite?: boolean;
+}
+
+export type MapCallbackFn = (currentValue: FileData, index: number) => unknown;
+
+export type ReduceCallbackFn = (accumulator: any, currentValue: FileData, index: number) => any;
