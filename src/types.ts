@@ -12,7 +12,7 @@ export interface FileData {
   metadata: Metadata;
 }
 
-export type TransformFn<T> = (data: T) => T;
+export type TransformFn<T> = (data: T) => any;
 
 export type TransformData<T> = Record<string, T | T[keyof T]>;
 
@@ -23,6 +23,21 @@ export type TransformItem<T> = TransformFn<T> | TransformMap<T>;
 export type Transform = TransformFn<FileData> | {
   body?: TransformFn<string>;
   metadata?: TransformItem<Metadata>;
+};
+
+export type FrontmatterFormat = 'json' | 'JSON' | 'yaml' | 'YAML';
+
+export type FrontmatterFormatConfig = {
+  format?: FrontmatterFormat,
+  space?: number;
+} | FrontmatterFormat;
+
+export type WriteOptions = WriteFileOptions & {
+  body?: boolean;
+  metadata?: boolean;
+  fmFormat?: FrontmatterFormatConfig;
+  transform?: TransformFn<FileData>;
+  replace?: TransformFn<string>;
 };
 
 export type Export2JSONOptions = WriteFileOptions & {

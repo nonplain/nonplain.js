@@ -3,6 +3,7 @@ const body = {
 };
 
 const frontmatter = {
+  whole: /^---[^]*?^---\n/m,
   sansDelimiters: /(?<=^---\n)[^]*?(?=\n^---)/m,
 };
 

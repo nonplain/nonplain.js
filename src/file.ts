@@ -1,6 +1,7 @@
 import fs, { PathLike } from 'fs';
 
 import {
+  composeFrontmatterString,
   handleTransformFn,
   handleTransformFnOrMap,
   parseFrontmatter,
@@ -11,6 +12,7 @@ import {
   Metadata,
   FileData,
   Transform,
+  WriteOptions,
 } from './types';
 
 export default class File implements FileData {
@@ -28,6 +30,48 @@ export default class File implements FileData {
 
     this.body = body;
     this.metadata = metadata;
+  }
+
+  async write(file: PathLike | number, options?: WriteOptions): Promise<void> {
+    const {
+      body: writeBody = true,
+      metadata: writeMetadata = true,
+      fmFormat,
+      transform,
+      replace,
+    } = options || {};
+    const validTransform = transform && typeof transform === 'function';
+    const validReplace = replace && typeof replace === 'function';
+
+    if (transform && !validTransform) {
+      throw new Error('TypeError: transform must be a function');
+    }
+
+    if (replace && !validReplace) {
+      throw new Error('TypeError: transform must be a function');
+    }
+
+    const { metadata, body } = validTransform ? transform(this.getData()) : this.getData();
+    let fileStr = '';
+
+    if (writeMetadata) {
+      fileStr += composeFrontmatterString(metadata, fmFormat);
+    }
+
+    if (writeBody) {
+      fileStr += body;
+    }
+
+    const writeFileStr = validReplace ? replace(fileStr) : fileStr;
+
+    const writeFileOptions = options || {};
+    delete writeFileOptions.transform;
+
+    await fs.writeFileSync(
+      file,
+      writeFileStr,
+      writeFileOptions,
+    );
   }
 
   async export2JSON(file: PathLike | number, options?: Export2JSONOptions): Promise<void> {

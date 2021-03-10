@@ -8,6 +8,7 @@ import os from 'os';
 import path, { ParsedPath } from 'path';
 
 import { Files, File, Metadata, FileData } from '../dist';
+import regex from '../dist/utils/regex';
 
 import {
   files as expectedFiles,
@@ -252,6 +253,68 @@ describe('File', () => {
 
       await file.load(filepath);
       expect(file.getData()).toEqual(expectedFiles[1]);
+    });
+  });
+
+  describe('write', () => {
+    test('writes new file with YAML metadata from currently loaded data', async () => {
+      const filepath = path.join(__dirname, './fixtures/files/src/Test file 1.md');
+      const file = new File();
+
+      const tmpDir = await fs.mkdtempSync(os.tmpdir());
+      const writeDestination = path.join(tmpDir, 'write.md');
+
+      const replace = (content: string) => content.replace('T00:00:00.000Z', '');
+
+      await file.load(filepath);
+      await file.write(writeDestination, { replace });
+      const writeContent = await fs.readFileSync(writeDestination).toString()
+      const originalContent = await fs.readFileSync(filepath).toString()
+      expect(writeContent).toEqual(originalContent);
+    });
+
+    test('writes new file with JSON metadata from currently loaded data', async () => {
+      const filepath = path.join(__dirname, './fixtures/files/src/Test file 2.md');
+      const file = new File();
+
+      const tmpDir = await fs.mkdtempSync(os.tmpdir());
+      const writeDestination = path.join(tmpDir, 'write.md');
+
+      await file.load(filepath);
+      await file.write(writeDestination, { fmFormat: { format: 'json', space: 2 } });
+      const writeContent = await fs.readFileSync(writeDestination).toString()
+      const originalContent = await fs.readFileSync(filepath).toString()
+      expect(writeContent).toEqual(originalContent);
+    });
+
+    test('writes new file from currently loaded metadata only', async () => {
+      const filepath = path.join(__dirname, './fixtures/files/src/Test file 2.md');
+      const file = new File();
+
+      const tmpDir = await fs.mkdtempSync(os.tmpdir());
+      const writeDestination = path.join(tmpDir, 'write.md');
+
+      await file.load(filepath);
+      await file.write(writeDestination, { body: false, fmFormat: { format: 'json', space: 2 } });
+      const writeContent = await fs.readFileSync(writeDestination).toString()
+      const originalContent = await fs.readFileSync(filepath).toString()
+      const originalContentSansBody = originalContent.replace(regex.body.whole, '');
+      expect(writeContent).toEqual(originalContentSansBody);
+    });
+
+    test('writes new file from currently loaded body only', async () => {
+      const filepath = path.join(__dirname, './fixtures/files/src/Test file 2.md');
+      const file = new File();
+
+      const tmpDir = await fs.mkdtempSync(os.tmpdir());
+      const writeDestination = path.join(tmpDir, 'write.md');
+
+      await file.load(filepath);
+      await file.write(writeDestination, { metadata: false, fmFormat: { format: 'json', space: 2 } });
+      const writeContent = await fs.readFileSync(writeDestination).toString()
+      const originalContent = await fs.readFileSync(filepath).toString()
+      const originalContentSansFrontmatter = originalContent.replace(regex.frontmatter.whole, '');
+      expect(writeContent).toEqual(originalContentSansFrontmatter);
     });
   });
 
