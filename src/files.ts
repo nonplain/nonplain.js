@@ -117,6 +117,10 @@ export class Files {
     return this.files.map((file) => file.getData());
   }
 
+  collectInstances(): File[] {
+    return this.files;
+  }
+
   transform(transform: Transform): void {
     this.files.forEach((file) => file.transform(transform));
   }

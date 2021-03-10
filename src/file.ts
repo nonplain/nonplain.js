@@ -38,7 +38,7 @@ export default class File implements FileData {
       throw new Error('TypeError: transform must be a function');
     }
 
-    const fileData = validTransform ? transform(this.getData()) : this.getData;
+    const fileData = validTransform ? transform(this.getData()) : this.getData();
 
     const writeFileOptions = options || {};
     delete writeFileOptions.transform;
