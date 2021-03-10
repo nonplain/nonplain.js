@@ -65,7 +65,9 @@ export default class File implements FileData {
       this.body = body || this.body;
       this.metadata = metadata || this.metadata;
     } else {
-      this.body = transform.body ? handleTransformFn<string>(transform.body, this.body) : this.body;
+      this.body = transform.body
+        ? handleTransformFn<string>(transform.body, this.body)
+        : this.body;
       this.metadata = transform.metadata
         ? handleTransformFnOrMap<Metadata>(transform.metadata, this.metadata)
         : this.metadata;

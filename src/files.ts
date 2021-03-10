@@ -1,6 +1,6 @@
 import fs, { PathLike } from 'fs';
 
-import { File } from './file';
+import File from './file';
 import { Export2JSONOptions, FileData, Transform } from './types';
 import { formatPath, getFilepathsFromSrcOrGlob } from './utils/path';
 

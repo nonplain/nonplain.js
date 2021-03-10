@@ -152,6 +152,10 @@ describe('Files', () => {
       await files.load(glob);
     });
 
+    afterEach(async () => {
+      files.clear();
+    });
+
     test('iterates over currently loaded files with Array.map()', async () => {
       const mappedFiles = files.map((file: FileData) => file);
       expect(mappedFiles).toEqual(expectedFiles);
@@ -164,6 +168,10 @@ describe('Files', () => {
     beforeEach(async () => {
       const glob = path.join(__dirname, './fixtures/files/src/**/*.md');
       await files.load(glob);
+    });
+
+    afterEach(async () => {
+      files.clear();
     });
 
     test('iterates over currently loaded files with Array.reduce()', async () => {
@@ -180,10 +188,18 @@ describe('Files', () => {
   });
 
   describe('transform', () => {
-    test('transforms files with transform map', async () => {
-      const glob = path.join(__dirname, './fixtures/files/src/**/*.md');
-      const files = new Files();
+    const files = new Files();
 
+    beforeEach(async () => {
+      const glob = path.join(__dirname, './fixtures/files/src/**/*.md');
+      await files.load(glob);
+    });
+
+    afterEach(async () => {
+      files.clear();
+    });
+
+    test('transforms files with transform map', async () => {
       const transform = {
         body: (body: string) => body.replace('multiple lines', 'an additional line'),
         metadata: {
@@ -192,15 +208,11 @@ describe('Files', () => {
         },
       };
 
-      await files.load(glob);
       files.transform(transform);
       expect(files.collect()).toEqual(expectedFilesWithTransform);
     });
 
     test('transforms files with transform function', async () => {
-      const glob = path.join(__dirname, './fixtures/files/src/**/*.md');
-      const files = new Files();
-
       const transform = ({ body, metadata }: FileData) => ({
         body: body.replace('multiple lines', 'an additional line'),
         metadata: {
@@ -213,7 +225,6 @@ describe('Files', () => {
         },
       });
 
-      await files.load(glob);
       files.transform(transform);
       expect(files.collect()).toEqual(expectedFilesWithTransform);
     });
