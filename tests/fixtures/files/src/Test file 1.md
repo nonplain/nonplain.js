@@ -1,6 +1,6 @@
 ---
-title: Test file 1
-date: 2021-01-01
+name: Test file 1
+when: 2021-01-01
 ---
 
 Test file 1 body

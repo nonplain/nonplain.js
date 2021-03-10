@@ -7,7 +7,7 @@ const base = [
   {
     body: "\nTest file 1 body\nwith multiple lines\nhere's a [[wiki link]]\nhere's a [md link](./Test file 2.md) as well\n",
     metadata: {
-      date: new Date('2021-01-01T00:00:00.000Z'),
+      when: new Date('2021-01-01T00:00:00.000Z'),
       file: {
         base: 'Test file 1.md',
         dir: path.join(__dirname, '/src'),
@@ -15,13 +15,13 @@ const base = [
         name: 'Test file 1',
         root: '/',
       },
-      title: 'Test file 1',
+      name: 'Test file 1',
     },
   },
   {
     body: "\nTest file 2 body\nwith multiple lines\nhere's a [[wiki link]]\nhere's a [md link](./Test file 1.md) as well\n",
     metadata: {
-      date: '2021-01-02',
+      when: '2021-01-02',
       file: {
         base: 'Test file 2.md',
         dir: path.join(__dirname, '/src'),
@@ -29,7 +29,7 @@ const base = [
         name: 'Test file 2',
         root: '/',
       },
-      title: 'Test file 2',
+      name: 'Test file 2',
     },
   },
 ];

@@ -2,9 +2,7 @@ import { WriteFileOptions } from 'fs';
 import { ParsedPath } from 'path';
 
 export type BaseMetadata = {
-  date?: string;
   file?: ParsedPath;
-  title?: string;
 };
 
 export type Metadata = BaseMetadata & Record<string, unknown> | any;

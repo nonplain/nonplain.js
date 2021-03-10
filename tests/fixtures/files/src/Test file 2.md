@@ -1,7 +1,7 @@
 ---
 {
-  "title": "Test file 2",
-  "date": "2021-01-02"
+  "name": "Test file 2",
+  "when": "2021-01-02"
 }
 ---
 
