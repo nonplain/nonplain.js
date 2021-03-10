@@ -13,12 +13,12 @@
   "types": "./dist/index.d.ts",
   "scripts": {
     "build": "tsc",
-    "test": "tsc && jest",
-    "test:coverage": "jest --coverage",
+    "test": "yarn build && jest",
+    "test:coverage": "yarn test --coverage",
     "test:coverage:web": "yarn test:coverage && open ./coverage/lcov-report/index.html",
     "lint": "eslint src --ext .ts",
     "lint:fix": "yarn lint --fix",
-    "pub": "yarn build && yarn publish"
+    "pub": "yarn test && yarn publish"
   },
   "dependencies": {
     "glob": "^7.1.6",
