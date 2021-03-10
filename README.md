@@ -24,9 +24,9 @@ Once the file is parsed, the metadata and body can be read, transformed, and exp
 In practice, this means we need to:
 
 - [define what frontmatter is](#what-frontmatter-is)
-- parse nonplain files
-- transform nonplain file data
-- export nonplain file data
+- [parse nonplain files](#parsing-nonplain-files)
+- [transform nonplain file data](#transforming-nonplain-file-data)
+- [export nonplain file data](#exporting-nonplain-file-data)
 
 ## What frontmatter is
 
@@ -51,3 +51,88 @@ syke: now it's YAML
 
 ... contents of file ...
 ```
+
+## Parsing nonplain files
+
+To parse a nonplain file, load it using the `Files` class. If you only want to operate on a single file, you can still use the `Files` class or you can use `File` instead.
+
+Using `Files`:
+
+```js
+const { Files } = require("nonplain");
+
+const files = Files.load('/path/to/dir/**/*.md'); // you can use a glob or a filepath
+
+console.log(files.collect());
+
+// Output:
+//
+// [
+//     {
+//         "body": "This is the body of the\nfirst loaded file",
+//         "metadata": {
+//             "file": {
+//                 "root": "/",
+//                 "dir": "/path/to/dir",
+//                 "base": "file1.md",
+//                 "ext": ".md",
+//                 "name": "file1",
+//             },
+//             "title": "file1",
+//             "date": "2021-01-01",
+//             "key 1": "value 1",
+//             "key 2": "value 2"
+//         }
+//     },
+//     {
+//         "body": "This is the body of the\nsecond loaded file",
+//         "metadata": {
+//             "file": {
+//                 "root": "/",
+//                 "dir": "/path/to/dir",
+//                 "base": "file2.md",
+//                 "ext": ".md",
+//                 "name": "file2",
+//             },
+//             "title": "file2",
+//             "date": "2021-01-02",
+//             "key 1": "value 1",
+//             "key 2": "value 2"
+//             "key 3": "value 3"
+//         }
+//     }
+// ]
+```
+
+Using `File`:
+
+```js
+const { File } = require("nonplain");
+
+const file = File.load('/path/to/file1.md');
+
+console.log(file.getData());
+
+// Output:
+//
+// {
+//     "body": "This is the body of the\nfirst loaded file",
+//     "metadata": {
+//         "file": {
+//             "root": "/",
+//             "dir": "/path/to/dir",
+//             "base": "file1.md",
+//             "ext": ".md",
+//             "name": "file1",
+//         },
+//         "title": "file1",
+//         "date": "2021-01-01",
+//         "key 1": "value 1",
+//         "key 2": "value 2"
+//     }
+// }
+```
+
+## Transforming nonplain file data
+
+## Exporting nonplain file data
