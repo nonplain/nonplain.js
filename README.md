@@ -389,6 +389,8 @@ Returns the currently loaded file data:
 
 [[link to toc](#contents)]
 
+- Tools for markdown links in nonplain files: [nonplain-md-link.js](https://github.com/jaredgorski/nonplain-md-link.js)
+
 Other libraries providing simple, composable tools for working with stuff like VimWiki notes are in the works. Stay tuned for more.
 
 ## Contributing
