@@ -118,7 +118,7 @@ const { Files } = require("nonplain");
 
 (async () => {
   // you can use a glob or a filepath
-  const files = await new Files.load('/path/to/dir/**/*.md');
+  const files = await new Files().load('/path/to/dir/**/*.md');
 
   console.log(files.collect());
 })()
@@ -161,7 +161,7 @@ Using `File`:
 const { File } = require("nonplain");
 
 (async () => {
-  const file = await new File.load('/path/to/file.md');
+  const file = await new File().load('/path/to/file.md');
 
   console.log(file.getData());
 })()
@@ -296,7 +296,7 @@ Returns all currently loaded files as an array of file data:
 
 ```js
 (async () => {
-  const files = await new Files.load('/path/to/dir/**/*.md');
+  const files = await new Files().load('/path/to/dir/**/*.md');
 
   console.log(files.collect());
 })()
@@ -361,7 +361,7 @@ Returns the currently loaded file data:
 
 ```js
 (async () => {
-  const file = await new File.load('/path/to/file1.md');
+  const file = await new File().load('/path/to/file1.md');
 
   console.log(file.getData());
 })()
