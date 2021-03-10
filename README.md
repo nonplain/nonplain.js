@@ -131,4 +131,48 @@ Notice that the metadata of each file includes a `file` property. This property 
 
 ## Transforming nonplain file data
 
+You may want to transform nonplain file data in place once it's loaded into an instance of `File` or `Files`. That's what the `transform()` method is for.
+
+`transform()` receives a callback argument which is called with the current file data (for `File.transform()`) or iteratively through each loaded file (`Files.transform()`). There are two options for this callback argument:
+
+1. Traditional callback function:
+    ```js
+    files.transform((file) => {
+        const { body: oldBody, metadata: oldMetadata } = file;
+        
+        const newBody = oldBody.replace('this', 'that');
+        
+        const newMetadata = Object.assign({}, oldMetadata);
+        newMetadata.newKey = 'My new value for the file called ' + oldMetadata.file.name;
+        
+        return {
+            body: newBody,
+            metadata: newMetadata,
+        };
+    });
+    ```
+2. Callback map:
+    ```js
+    files.transform({
+        body: (oldBody) => {
+            const newBody = oldBody.replace('this', 'that');
+            
+            return newBody;
+        },
+        metadata: (oldMetadata) => {
+            const newMetadata = Object.assign({}, oldMetadata);
+            
+            newMetadata.newKey = 'My new value for the file called ' + oldMetadata.file.name;
+            
+            return newMetadata;
+        },
+    });
+    ```
+    
+`transform()` works the same way on both `File` and `Files`. The `transform()` method makes these changes "in place", meaning that your instance of `File` or `Files` will reflect the new file data after the transformation.
+
+Possible uses for `transform()` might be converting content from markdown to HTML, calculating and injecting helpful metadata (such as VimWiki backlinks), and more.
+
 ## Exporting nonplain file data
+
+Once file data is transformed to your liking, it needs to be exported and used elsewhere. That's where the `File.write()` and the `export2JSON()` methods come in.
