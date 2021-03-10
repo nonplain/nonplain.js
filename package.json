@@ -17,7 +17,8 @@
     "test:coverage": "jest --coverage",
     "test:coverage:web": "yarn test:coverage && open ./coverage/lcov-report/index.html",
     "lint": "eslint src --ext .ts",
-    "lint:fix": "yarn lint --fix"
+    "lint:fix": "yarn lint --fix",
+    "pub": "yarn build && yarn publish"
   },
   "dependencies": {
     "glob": "^7.1.6",
