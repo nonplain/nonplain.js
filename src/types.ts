@@ -12,7 +12,9 @@ export interface FileData {
   metadata: Metadata;
 }
 
-export type TransformFn<T> = (data: T) => any;
+export type ReplaceFn = (data: string) => string;
+
+export type TransformFn<T> = (data: T) => T;
 
 export type TransformData<T> = Record<string, T | T[keyof T]>;
 
@@ -37,7 +39,7 @@ export type WriteOptions = WriteFileOptions & {
   metadata?: boolean;
   fmFormat?: FrontmatterFormatConfig;
   transform?: TransformFn<FileData>;
-  replace?: TransformFn<string>;
+  replace?: ReplaceFn;
 };
 
 export type Export2JSONOptions = WriteFileOptions & {
