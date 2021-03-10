@@ -5,7 +5,7 @@ import {
   handleTransformFnOrMap,
   parseFrontmatter,
   parseFile,
-} from './utils/note';
+} from './utils/file';
 import {
   Export2JSONOptions,
   Metadata,
@@ -13,16 +13,12 @@ import {
   Transform,
 } from './types';
 
-type FileOptions = {
-  transform?: Transform;
-}
-
-export class File implements FileData {
+export default class File implements FileData {
   body: string;
 
   metadata: Metadata;
 
-  async load(src: string, options?: FileOptions): Promise<void> {
+  async load(src: string): Promise<void> {
     const { file, frontmatter, body } = await parseFile(src);
     const parsedFrontmatter = parseFrontmatter(frontmatter);
     const metadata = {
@@ -32,10 +28,6 @@ export class File implements FileData {
 
     this.body = body;
     this.metadata = metadata;
-
-    if (options?.transform) {
-      this.transform(options.transform);
-    }
   }
 
   async export2JSON(file: PathLike | number, options?: Export2JSONOptions): Promise<void> {
@@ -46,7 +38,7 @@ export class File implements FileData {
       throw new Error('TypeError: transform must be a function');
     }
 
-    const noteData = validTransform ? transform(this.getData()) : this.getData;
+    const fileData = validTransform ? transform(this.getData()) : this.getData;
 
     const writeFileOptions = options || {};
     delete writeFileOptions.transform;
@@ -54,7 +46,7 @@ export class File implements FileData {
 
     await fs.writeFileSync(
       file,
-      JSON.stringify(noteData, null, space),
+      JSON.stringify(fileData, null, space),
       writeFileOptions,
     );
   }

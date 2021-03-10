@@ -3,30 +3,12 @@ const body = {
 };
 
 const frontmatter = {
-  whole: /^---[^]*?^---/m,
   sansDelimiters: /(?<=^---\n)[^]*?(?=\n^---)/m,
-  yaml: {
-    listItemBeginningWithLink: /^- \[.*$/gm,
-  },
 };
 
-const links = {
-  all: /(\[[^\[\]]*\]\([^\(\)]*\)|\[\[[^\[\]]*\]\])/g,
-  markdown: {
-    whole: /\[[^\[\]]*\]\([^\(\)]*\)/g,
-    innerText: /(?<=\[)[^\[\]]+?(?=\]\([^\(\)]*\))/g,
-    path: /(?<=\[[^\[\]]*\]\()[^\(\)]+?(?=\))/g,
-  },
-  wiki: {
-    whole: /\[\[[^\[\]]*\]\]/g,
-    innerText: /(?<=\[\[)[^\[\]]+?(?=\]\])/g,
-  },
-};
-
-const patterns = {
+const regex = {
   body,
   frontmatter,
-  links,
 };
 
-export default patterns;
+export default regex;

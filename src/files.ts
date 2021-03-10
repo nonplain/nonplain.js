@@ -1,22 +1,19 @@
 import fs, { PathLike } from 'fs';
-import glob from 'glob';
-import path from 'path';
 
 import { File } from './file';
 import { Export2JSONOptions, FileData, Transform } from './types';
-import { formatPath } from './utils/path';
+import { formatPath, getFilepathsFromSrcOrGlob } from './utils/path';
 
 type FilterFilepathsFn = (filename: string) => boolean;
 
 export type LoadOptions = {
   filterFilepaths?: FilterFilepathsFn;
   overwrite?: boolean;
-  transform?: Transform;
 }
 
 type MapCallbackFn = (currentValue: FileData, index: number) => unknown;
 
-type ReduceCallbackFn = (accumulator: unknown, currentValue: FileData, index: number) => unknown;
+type ReduceCallbackFn = (accumulator: any, currentValue: FileData, index: number) => any;
 
 export class Files {
   private files: File[];
@@ -32,7 +29,7 @@ export class Files {
     this.addSrc(src);
     src = formatPath(src);
 
-    const { filterFilepaths, overwrite = false, transform } = options || {};
+    const { filterFilepaths, overwrite = false } = options || {};
     const validFilterFilepaths = filterFilepaths && typeof filterFilepaths === 'function';
 
     if (overwrite) {
@@ -43,10 +40,12 @@ export class Files {
       throw new Error('TypeError: filterFilepaths must be a function');
     }
 
-    let srcFilepaths = glob.hasMagic(src)
-      ? await glob.sync(src)
-      : await fs.promises.readdir(src)
-        .then((filenames) => filenames.map((filename) => path.join(src, filename)));
+    let srcFilepaths;
+    try {
+      srcFilepaths = await getFilepathsFromSrcOrGlob(src);
+    } catch (err) {
+      throw new Error(`Error while loading file(s) from src: ${src}.\n${err}`);
+    }
 
     if (validFilterFilepaths) {
       srcFilepaths = srcFilepaths.filter(filterFilepaths);
@@ -54,16 +53,16 @@ export class Files {
 
     const newFiles = await Promise.all(
       srcFilepaths.map(async (filepath) => {
-        const note = new File();
+        const file = new File();
 
         try {
-          await note.load(filepath, { transform });
+          await file.load(filepath);
         } catch (err) {
           /* eslint-disable-next-line no-console */
           console.error(`Error while handling file: ${filepath}.\n`, err);
         }
 
-        return note;
+        return file;
       }),
     ).then((results) => results.filter((x) => !!x));
 
@@ -75,7 +74,8 @@ export class Files {
   }
 
   clear(): void {
-    this.constructor();
+    this.files = [];
+    this.srcSet = new Set();
   }
 
   async export2JSON(file: PathLike | number, options?: Export2JSONOptions): Promise<void> {
@@ -91,7 +91,7 @@ export class Files {
     }
 
     const filesData = validTransform
-      ? this.files.map((note) => transform(note.getData()))
+      ? this.files.map((f) => transform(f.getData()))
       : this.files;
 
     const writeFileOptions = options || {};
@@ -109,15 +109,15 @@ export class Files {
     return this.collect().map(callback);
   }
 
-  reduce(callback: ReduceCallbackFn, initialValue?: Object): Object {
+  reduce<T>(callback: ReduceCallbackFn, initialValue?: T): T {
     return this.collect().reduce(callback, initialValue);
   }
 
   collect(): FileData[] {
-    return this.files.map((note) => note.getData());
+    return this.files.map((file) => file.getData());
   }
 
   transform(transform: Transform): void {
-    this.files.forEach((note) => note.transform(transform));
+    this.files.forEach((file) => file.transform(transform));
   }
 }
