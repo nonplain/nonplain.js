@@ -107,7 +107,7 @@ export default class Files {
     }
   }
 
-  map(callback: MapCallbackFn): Object {
+  map(callback: MapCallbackFn): Array<any> {
     return this.collect().map(callback);
   }
 

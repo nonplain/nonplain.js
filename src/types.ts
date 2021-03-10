@@ -54,6 +54,6 @@ export type FilesLoadOptions = {
   overwrite?: boolean;
 }
 
-export type MapCallbackFn = (currentValue: FileData, index: number) => unknown;
+export type MapCallbackFn = (currentValue: FileData, index: number) => Array<any>;
 
 export type ReduceCallbackFn = (accumulator: any, currentValue: FileData, index: number) => any;
