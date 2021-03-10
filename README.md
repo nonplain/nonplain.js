@@ -78,8 +78,6 @@ console.log(files.collect());
 //                 "ext": ".md",
 //                 "name": "file1",
 //             },
-//             "title": "file1",
-//             "date": "2021-01-01",
 //             "key 1": "value 1",
 //             "key 2": "value 2"
 //         }
@@ -94,8 +92,6 @@ console.log(files.collect());
 //                 "ext": ".md",
 //                 "name": "file2",
 //             },
-//             "title": "file2",
-//             "date": "2021-01-02",
 //             "key 1": "value 1",
 //             "key 2": "value 2"
 //             "key 3": "value 3"
@@ -125,13 +121,13 @@ console.log(file.getData());
 //             "ext": ".md",
 //             "name": "file1",
 //         },
-//         "title": "file1",
-//         "date": "2021-01-01",
 //         "key 1": "value 1",
 //         "key 2": "value 2"
 //     }
 // }
 ```
+
+Notice that the metadata of each file includes a `file` property. This property is included by default to denote the original source file. This property can be changed or removed by transforming the data using `transform()`.
 
 ## Transforming nonplain file data
 
