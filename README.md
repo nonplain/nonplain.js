@@ -89,7 +89,8 @@ Using `Files`:
 const { Files } = require("nonplain");
 
 (async () => {
-  const files = await new Files.load('/path/to/dir/**/*.md'); // you can use a glob or a filepath
+  // you can use a glob or a filepath
+  const files = await new Files.load('/path/to/dir/**/*.md');
 
   console.log(files.collect());
 })()
