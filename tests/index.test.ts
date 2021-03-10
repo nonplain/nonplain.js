@@ -7,8 +7,7 @@ import os from 'os';
 /* @ts-ignore */
 import path, { ParsedPath } from 'path';
 
-import { Files, File, Metadata, FileData } from '../dist';
-import regex from '../dist/utils/regex';
+import { Files, File, Metadata, FileData, regex } from '../dist';
 
 import {
   files as expectedFiles,
