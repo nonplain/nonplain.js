@@ -29,7 +29,9 @@ One primary drawback of using frontmatter in plaintext files is that there are f
 - [Related work](#related-work)
 - [Contributing](#contributing)
 
-## What this library does -- [[toc](#contents)]
+## What this library does
+
+-- [[toc](#contents)]
 
 The concept is rather simple: define the difference between metadata and body content and parse the file accordingly.
 
@@ -47,7 +49,9 @@ In order to get there, we need to:
 - [transform nonplain file data](#transforming-nonplain-file-data)
 - [export nonplain file data](#exporting-nonplain-file-data)
 
-## What frontmatter is -- [[toc](#contents)]
+## What frontmatter is
+
+-- [[toc](#contents)]
 
 In the future, this may be more customizable. For our purposes, frontmatter is a "fence" of 3 dashes `---` on the first line of the file, followed by valid JSON or YAML beginning on the next line, followed by a final fence of 3 dashes `---` on the line after the last line of JSON or YAML data.
 
@@ -71,7 +75,9 @@ syke: now it's YAML
 ... contents of file ...
 ```
 
-## Parsing nonplain files -- [[toc](#contents)]
+## Parsing nonplain files
+
+-- [[toc](#contents)]
 
 To parse a nonplain file, load it using the `Files` class. If you only want to operate on a single file, you can still use the `Files` class or you can use `File` instead.
 
@@ -148,7 +154,9 @@ console.log(file.getData());
 
 Notice that the metadata of each file includes a `file` property. This property is included by default to denote the original source file. This property can be changed or removed by transforming the data using `transform()`.
 
-## Transforming nonplain file data -- [[toc](#contents)]
+## Transforming nonplain file data
+
+-- [[toc](#contents)]
 
 You may want to transform nonplain file data in place once it's loaded into an instance of `File` or `Files`. That's what the `transform()` method is for.
 
@@ -191,7 +199,9 @@ You may want to transform nonplain file data in place once it's loaded into an i
 
 Possible uses for `transform()` might be converting content from markdown to HTML, calculating and injecting helpful metadata (such as VimWiki backlinks), and more.
 
-## Exporting nonplain file data -- [[toc](#contents)]
+## Exporting nonplain file data
+
+-- [[toc](#contents)]
 
 Once file data is transformed to your liking, it needs to be exported and used elsewhere. That's where the `File.write()` and the `export2JSON()` methods come in.
 
@@ -237,7 +247,9 @@ File.export2JSON(file [, options])
     - `mode` _(default: `0o666`)_: integer - The file mode when writing the destination file. [More on this...](https://nodejs.org/api/fs.html#fs_fs_writefilesync_file_data_options)
     - `flag` _(default: 'w')_: string - The flag used when writing the destination file. [More on this...](https://nodejs.org/api/fs.html#fs_fs_writefilesync_file_data_options)
 
-## Other useful methods -- [[toc](#contents)]
+## Other useful methods
+
+-- [[toc](#contents)]
 
 ### Files.clear()
 
@@ -336,10 +348,14 @@ console.log(file.getData());
 // }
 ```
 
-## Related work -- [[toc](#contents)]
+## Related work
+
+-- [[toc](#contents)]
 
 Other libraries providing simple, composable tools for working with stuff like markdown links is in the works. Stay tuned for more.
 
-## Contributing -- [[toc](#contents)]
+## Contributing
+
+-- [[toc](#contents)]
 
 Nothing is set in stone right now; this concept is very much a work in progress. Please feel free to contact me with suggestions or ideas. Thanks!
