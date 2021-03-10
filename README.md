@@ -17,15 +17,15 @@ One primary drawback of using frontmatter in plaintext files is that there are f
 - [Parsing nonplain files](#parsing-nonplain-files)
 - [Transforming nonplain file data](#transforming-nonplain-file-data)
 - [Exporting nonplain file data](#exporting-nonplain-file-data)
-  - [File.write()](#filewrite)
+  - [File.prototype.write()](#fileprototypewrite)
   - [export2JSON](#export2json)
 - [Other useful methods](#other-useful-methods)
-  - [Files.clear()](#filesclear)
-  - [Files.collect()](#filescollect)
-  - [Files.map()](#filesmap)
-  - [Files.reduce()](#filesreduce)
-  - [Files.collectInstances()](#filescollectinstances)
-  - [File.getData()](#filegetdata)
+  - [Files.prototype.clear()](#filesprototypeclear)
+  - [Files.prototype.collect()](#filesprototypecollect)
+  - [Files.prototype.map()](#filesprototypemap)
+  - [Files.prototype.reduce()](#filesprototypereduce)
+  - [Files.prototype.collectInstances()](#filesprototypecollectinstances)
+  - [File.prototype.getData()](#filegetdata)
 - [Related work](#related-work)
 - [Contributing](#contributing)
 
@@ -44,14 +44,18 @@ Once the file is parsed, the metadata and body can be read, transformed, and exp
 
 In order to get there, we need to:
 
-- [define what frontmatter is](#what-frontmatter-is)
+- [define what a nonplain file is](#what-a-nonplain-file-is)
 - [parse nonplain files](#parsing-nonplain-files)
 - [transform nonplain file data](#transforming-nonplain-file-data)
 - [export nonplain file data](#exporting-nonplain-file-data)
 
-## What frontmatter is
+## What a nonplain file is
 
 [[link to toc](#contents)]
+
+A "nonplain" file is any plaintext file that contains metadata as frontmatter. It's not really a file format, but rather a way to think about files of any plaintext format that begin with frontmatter.
+
+### What frontmatter is (the metadata)
 
 In the future, this may be more customizable. For our purposes, frontmatter is a "fence" of 3 dashes `---` on the first line of the file, followed by valid JSON or YAML beginning on the next line, followed by a final fence of 3 dashes `---` on the line after the last line of JSON or YAML data.
 
@@ -60,11 +64,34 @@ It looks like this:
 ```
 ---
 {
+    "what is this?": "it's JSON frontmatter"
+}
+---
+```
+
+or this:
+
+```
+---
+syke: now it's YAML
+---
+```
+
+### What the body is (the content)
+
+The body is everything after the metadata.
+
+When the file is put together, it looks like this:
+
+```
+---
+{
     "what is this?": "it's called JSON"
 }
 ---
 
-... contents of file ...
+This is the body of
+the first file
 ```
 
 or this:
@@ -74,7 +101,8 @@ or this:
 syke: now it's YAML
 ---
 
-... contents of file ...
+This is the body of
+the second file
 ```
 
 ## Parsing nonplain files
@@ -99,7 +127,7 @@ const { Files } = require("nonplain");
 //
 // [
 //     {
-//         "body": "This is the body of the\nfirst loaded file",
+//         "body": "This is the body of\nthe first file",
 //         "metadata": {
 //             "file": {
 //                 "root": "/",
@@ -108,12 +136,11 @@ const { Files } = require("nonplain");
 //                 "ext": ".md",
 //                 "name": "file1",
 //             },
-//             "key 1": "value 1",
-//             "key 2": "value 2"
+//             "what is this?": "it's JSON frontmatter",
 //         }
 //     },
 //     {
-//         "body": "This is the body of the\nsecond loaded file",
+//         "body": "This is the body of\nthe second file",
 //         "metadata": {
 //             "file": {
 //                 "root": "/",
@@ -122,9 +149,7 @@ const { Files } = require("nonplain");
 //                 "ext": ".md",
 //                 "name": "file2",
 //             },
-//             "key 1": "value 1",
-//             "key 2": "value 2"
-//             "key 3": "value 3"
+//             "syke": "now it's YAML",
 //         }
 //     }
 // ]
@@ -144,7 +169,7 @@ const { File } = require("nonplain");
 // Output:
 //
 // {
-//     "body": "This is the body of the\ncurrent file",
+//     "body": "This is the body of\nthe current file",
 //     "metadata": {
 //         "file": {
 //             "root": "/",
@@ -153,8 +178,9 @@ const { File } = require("nonplain");
 //             "ext": ".md",
 //             "name": "file",
 //         },
-//         "key 1": "value 1",
-//         "key 2": "value 2"
+//         "course number": "CS231n",
+//         "description": "Convolutional Neural Networks for Visual Recognition",
+//         "semester": "Spring 2020"
 //     }
 // }
 ```
@@ -167,7 +193,7 @@ Notice that the metadata of each file includes a `file` property. This property 
 
 You may want to transform nonplain file data in place once it's loaded into an instance of `File` or `Files`. That's what the `transform()` method is for.
 
-`transform()` receives a callback argument which is called with the current file data (for `File.transform()`) or iteratively through each loaded file (`Files.transform()`). There are two options for this callback argument:
+`transform()` receives a callback argument which is called with the current file data (for `file.transform()`) or iteratively through each loaded file (`files.transform()`). There are two options for this callback argument:
 
 1. Traditional callback function:
     ```js
@@ -212,14 +238,14 @@ Possible uses for `transform()` might be converting content from markdown to HTM
 
 [[link to toc](#contents)]
 
-Once file data is transformed to your liking, it needs to be exported and used elsewhere. That's where the `File.write()` and the `export2JSON()` methods come in.
+Once file data is transformed to your liking, it needs to be exported and used elsewhere. That's where the `file.write()` and `export2JSON()` methods come in.
 
-### File.write()
+### File.prototype.write()
 
-Every instance of `File` has a `write()` method. This is the `File.write()` API:
+Every instance of `File` has a `write()` method. This is the `File.prototype.write()` API:
 
 ```js
-File.write(file [, options])
+file.write(file [, options])
 ```
 
 - `file`: string, Buffer, URL, or integer file descriptor - Destination where the file will be written. Using a file descriptor behaves similarly to Node.js' `fs.write()` method.
@@ -238,14 +264,14 @@ File.write(file [, options])
 
 ### export2JSON()
 
-Files can also be exported to JSON using the `export2JSON()` method. The `export2JSON()` method exists on instances of both `File` and `Files`. `File.export2JSON()` will export the current file data to JSON and `Files.export2JSON()` will export an array containing all of the currently loaded files' data to JSON. This is the `export2JSON()` API:
+Files can also be exported to JSON using the `export2JSON()` method. The `export2JSON()` method exists on instances of both `File` and `Files`. `file.export2JSON()` will export the current file data to JSON and `files.export2JSON()` will export an array containing all of the currently loaded files' data to JSON. This is the `export2JSON()` API:
 
 ```js
-Files.export2JSON(file [, options])
+files.export2JSON(file [, options])
 ```
 
 ```js
-File.export2JSON(file [, options])
+file.export2JSON(file [, options])
 ```
 
 - `file`: string, Buffer, URL, or integer file descriptor - Destination where the file will be written. Using a file descriptor behaves similarly to Node.js' `fs.write()` method.
@@ -260,11 +286,11 @@ File.export2JSON(file [, options])
 
 [[link to toc](#contents)]
 
-### Files.clear()
+### Files.prototype.clear()
 
 Clears all currently loaded files from the `Files` instance.
 
-### Files.collect()
+### Files.prototype.collect()
 
 Returns all currently loaded files as an array of file data:
 
@@ -279,7 +305,7 @@ Returns all currently loaded files as an array of file data:
 //
 // [
 //     {
-//         "body": "This is the body of the\nfirst loaded file",
+//         "body": "This is the body of\nthe first file",
 //         "metadata": {
 //             "file": {
 //                 "root": "/",
@@ -288,12 +314,11 @@ Returns all currently loaded files as an array of file data:
 //                 "ext": ".md",
 //                 "name": "file1",
 //             },
-//             "key 1": "value 1",
-//             "key 2": "value 2"
+//             "what is this?": "it's JSON frontmatter",
 //         }
 //     },
 //     {
-//         "body": "This is the body of the\nsecond loaded file",
+//         "body": "This is the body of\nthe second file",
 //         "metadata": {
 //             "file": {
 //                 "root": "/",
@@ -302,37 +327,35 @@ Returns all currently loaded files as an array of file data:
 //                 "ext": ".md",
 //                 "name": "file2",
 //             },
-//             "key 1": "value 1",
-//             "key 2": "value 2"
-//             "key 3": "value 3"
+//             "syke": "now it's yaml",
 //         }
 //     }
 // ]
 ```
 
-### Files.map()
+### Files.prototype.map()
 
 ```js
-Files.map(callback(currentValue[, index[, array]]) {
+files.map(callback(currentValue[, index[, array]]) {
   // return element for newArray, after executing something
 }[, thisArg])
 ```
 
-Returns a new array generated by iteratively calling the given callback function on each element of file data. The same as running [`Array.map()`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/map) on `Files.collect()` (AKA `Files.collect().map()`).
+Returns a new array generated by iteratively calling the given callback function on each element of file data. The same as running [`Array.prototype.map()`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/map) on `files.collect()` (AKA `files.collect().map()`).
 
-### Files.reduce()
+### Files.prototype.reduce()
 
 ```js
-Files.reduce(callback( accumulator, currentValue, [, index[, array]] )[, initialValue])
+files.reduce(callback( accumulator, currentValue, [, index[, array]] )[, initialValue])
 ```
 
-Returns a single output generated by iteratively calling the given reducer function on each element of file data. The same as running [`Array.reduce()`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/Reduce) on `Files.collect()` (AKA `Files.collect().reduce()`).
+Returns a single output generated by iteratively calling the given reducer function on each element of file data. The same as running [`Array.prototype.reduce()`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/Reduce) on `files.collect()` (AKA `files.collect().reduce()`).
 
-### Files.collectInstances()
+### Files.prototype.collectInstances()
 
-Returns all currently loaded files as an array of `File` instances. Primarily used to iteratively call `File` methods, such as `File.write()`.
+Returns all currently loaded files as an array of `File` instances. Primarily used to iteratively call `File` methods, such as `file.write()`.
 
-### File.getData()
+### File.prototype.getData()
 
 Returns the currently loaded file data:
 
@@ -346,7 +369,7 @@ Returns the currently loaded file data:
 // Output:
 //
 // {
-//     "body": "This is the body of the\ncurrent file",
+//     "body": "This is the body of\nthe current file",
 //     "metadata": {
 //         "file": {
 //             "root": "/",
@@ -355,8 +378,9 @@ Returns the currently loaded file data:
 //             "ext": ".md",
 //             "name": "file",
 //         },
-//         "key 1": "value 1",
-//         "key 2": "value 2"
+//         "course number": "CS231n",
+//         "description": "Convolutional Neural Networks for Visual Recognition",
+//         "semester": "Spring 2020"
 //     }
 // }
 ```
