@@ -184,7 +184,7 @@ Every instance of `File` has a `write()` method. This is the `File.write()` API:
 File.write(file [, options])
 ```
 
-- file: string, Buffer, URL, or integer file descriptor - Destination where the file will be written. Using a file descriptor behaves similarly to Node.js' `fs.write()` method.
+- `file`: string, Buffer, URL, or integer file descriptor - Destination where the file will be written. Using a file descriptor behaves similarly to Node.js' `fs.write()` method.
 - options:
     - `body` _(default: true)_: boolean - Whether to write the body to the destination file.
     - `metadata` _(default: true)_: boolean - Whether to write the metadata to the destination file.
@@ -210,7 +210,7 @@ Files.export2JSON(file [, options])
 File.export2JSON(file [, options])
 ```
 
-- file: string, Buffer, URL, or integer file descriptor - Destination where the file will be written. Using a file descriptor behaves similarly to Node.js' `fs.write()` method.
+- `file`: string, Buffer, URL, or integer file descriptor - Destination where the file will be written. Using a file descriptor behaves similarly to Node.js' `fs.write()` method.
 - options:
     - `space` _(default: `4`)_: integer - The indentation to use, in spaces.
     - `transform`: function ((file) => newFile) - A callback function to transform file data before stringification.
