@@ -169,8 +169,9 @@ You may want to transform nonplain file data in place once it's loaded into an i
         
         const newBody = oldBody.replace('this', 'that');
         
-        const newMetadata = Object.assign({}, oldMetadata);
-        newMetadata.newKey = 'My new value for the file called ' + oldMetadata.file.name;
+        const newMetadata = Object.assign(oldMetadata, {
+          newKey: 'My new value for the file called ' + oldMetadata.file.name,
+        });
         
         return {
             body: newBody,
@@ -187,8 +188,9 @@ You may want to transform nonplain file data in place once it's loaded into an i
             return newBody;
         },
         metadata: (oldMetadata) => {
-            const newMetadata = Object.assign({}, oldMetadata);
-            newMetadata.newKey = 'My new value for the file called ' + oldMetadata.file.name;
+            const newMetadata = Object.assign(oldMetadata, {
+              newKey: 'My new value for the file called ' + oldMetadata.file.name,
+            });
             
             return newMetadata;
         },
