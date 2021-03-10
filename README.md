@@ -33,7 +33,7 @@ One primary drawback of using frontmatter in plaintext files is that there are f
 
 [[link to toc](#contents)]
 
-The concept is rather simple: define the difference between metadata and body content and parse the file accordingly.
+The concept is simple: define the difference between metadata and body content and parse the file accordingly.
 
 Once the file is parsed, the metadata and body can be read, transformed, and exported together or separately to accomplish various goals such as:
 
