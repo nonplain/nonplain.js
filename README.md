@@ -21,7 +21,7 @@ Once the file is parsed, the metadata and body can be read, transformed, and exp
 - converting files to some other, less plain format
 - whatever else you want to do ... the goal is composability
 
-In practice, this means we need to:
+In order to get there, we need to:
 
 - [define what frontmatter is](#what-frontmatter-is)
 - [parse nonplain files](#parsing-nonplain-files)
