@@ -10,6 +10,7 @@
   "files": [
     "dist"
   ],
+  "types": "./dist/index.d.ts",
   "scripts": {
     "build": "tsc",
     "test": "tsc && jest",
