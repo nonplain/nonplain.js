@@ -31,7 +31,7 @@ One primary drawback of using frontmatter in plaintext files is that there are f
 
 ## What this library does
 
--- [[link to toc](#contents)]
+[[link to toc](#contents)]
 
 The concept is rather simple: define the difference between metadata and body content and parse the file accordingly.
 
@@ -51,7 +51,7 @@ In order to get there, we need to:
 
 ## What frontmatter is
 
--- [[link to toc](#contents)]
+[[link to toc](#contents)]
 
 In the future, this may be more customizable. For our purposes, frontmatter is a "fence" of 3 dashes `---` on the first line of the file, followed by valid JSON or YAML beginning on the next line, followed by a final fence of 3 dashes `---` on the line after the last line of JSON or YAML data.
 
@@ -77,7 +77,7 @@ syke: now it's YAML
 
 ## Parsing nonplain files
 
--- [[link to toc](#contents)]
+[[link to toc](#contents)]
 
 To parse a nonplain file, load it using the `Files` class. If you only want to operate on a single file, you can still use the `Files` class or you can use `File` instead.
 
@@ -156,7 +156,7 @@ Notice that the metadata of each file includes a `file` property. This property 
 
 ## Transforming nonplain file data
 
--- [[link to toc](#contents)]
+[[link to toc](#contents)]
 
 You may want to transform nonplain file data in place once it's loaded into an instance of `File` or `Files`. That's what the `transform()` method is for.
 
@@ -201,7 +201,7 @@ Possible uses for `transform()` might be converting content from markdown to HTM
 
 ## Exporting nonplain file data
 
--- [[link to toc](#contents)]
+[[link to toc](#contents)]
 
 Once file data is transformed to your liking, it needs to be exported and used elsewhere. That's where the `File.write()` and the `export2JSON()` methods come in.
 
@@ -249,7 +249,7 @@ File.export2JSON(file [, options])
 
 ## Other useful methods
 
--- [[link to toc](#contents)]
+[[link to toc](#contents)]
 
 ### Files.clear()
 
@@ -350,12 +350,12 @@ console.log(file.getData());
 
 ## Related work
 
--- [[link to toc](#contents)]
+[[link to toc](#contents)]
 
 Other libraries providing simple, composable tools for working with stuff like markdown links is in the works. Stay tuned for more.
 
 ## Contributing
 
--- [[link to toc](#contents)]
+[[link to toc](#contents)]
 
 Nothing is set in stone right now; this concept is very much a work in progress. Please feel free to contact me with suggestions or ideas. Thanks!
