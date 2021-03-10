@@ -1,6 +1,6 @@
 {
   "name": "nonplain",
-  "version": "0.0.0",
+  "version": "0.0.1",
   "description": "Plaintext files, with metadata",
   "homepage": "https://github.com/jaredgorski/nonplain#readme",
   "repository": "github:jaredgorski/nonplain",
