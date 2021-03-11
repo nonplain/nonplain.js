@@ -5,7 +5,7 @@ import fs from 'fs';
 /* @ts-ignore */
 import os from 'os';
 /* @ts-ignore */
-import path, { ParsedPath } from 'path';
+import path from 'path';
 
 import { Files, File, Metadata, FileData, regex } from '../dist';
 
