@@ -8,7 +8,7 @@
 
 Plaintext files are commonly used for notes, code, and documentation. Plaintext files are nondescript by definition: only their content and their filenames describe them. Jekyll popularized [YAML frontmatter](https://jekyllrb.com/docs/front-matter/) to enrich plaintext files for static site generation. These "nonplain" files have proven useful in other contexts requiring metadata, such as notetaking.
 
-One primary drawback of using frontmatter in plaintext files is that there are few general-purpose tools for parsing and operating on these files' metadata and body content separately. The goal of nonplain is to make plaintext files with metadata easier.
+One drawback of using frontmatter in plaintext files is that there are few general-purpose tools for parsing and operating on these files' metadata and body content separately. The goal of nonplain is to make plaintext files with metadata easier.
 
 ## Contents
 
@@ -79,7 +79,7 @@ syke: now it's YAML
 
 ### What the body is (the content)
 
-The body is everything after the metadata.
+The body is everything after the frontmatter.
 
 When the file is put together, it looks like this:
 
