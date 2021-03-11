@@ -40,7 +40,7 @@ Once the file is parsed, the metadata and body can be read, transformed, and exp
 - analyzing files according to metadata
 - compiling relevant files for pagination
 - converting files to some other, less plain format
-- whatever else you want to do ... the goal is composability
+- whatever else you want to do
 
 In order to get there, we need to:
 
