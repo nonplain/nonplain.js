@@ -52,8 +52,7 @@ describe('Files', () => {
     test('loads files consecutively', () => {
       const glob = path.join(__dirname, './fixtures/files/src/**/*.md');
 
-      files.load(glob);
-      files.load(glob);
+      files.load(glob).load(glob);
       expect(files.collect().length).toEqual((expectedFiles.length * 2));
       expect(files.collect()).toEqual(expectedFiles.concat(expectedFiles));
     });
