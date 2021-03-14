@@ -1,6 +1,6 @@
 import yaml from 'js-yaml';
 
-import { FrontmatterFormatConfig, Metadata } from '../../types';
+import { FrontmatterFormatConfig, Metadata } from '../types';
 
 export function composeFrontmatterString(
   metadata: Metadata,

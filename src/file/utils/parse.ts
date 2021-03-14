@@ -1,20 +1,14 @@
 import fs from 'fs';
-import path, { ParsedPath } from 'path';
+import path from 'path';
 import yaml from 'js-yaml';
 
-import regex from '../regex';
-import { Metadata } from '../../types';
+import { regex } from './regex';
+import { Metadata, ParsedFile } from '../types';
 
-type ParsedFile = {
-  file: ParsedPath,
-  frontmatter: string,
-  body: string,
-};
-
-export async function parseFile(filepath: string): Promise<ParsedFile> {
+export function parseFile(filepath: string): ParsedFile {
   let content = '';
   try {
-    content = await fs.readFileSync(filepath, 'utf-8');
+    content = fs.readFileSync(filepath, 'utf-8');
   } catch (err) {
     throw new Error(`FileReadError: ${err} `);
   }

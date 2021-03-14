@@ -1,4 +1,4 @@
-import { TransformFn, TransformData, TransformItem } from '../../types';
+import { TransformFn, TransformData, TransformItem } from '../types';
 
 export function handleTransformFn<T>(transform: TransformFn<T>, data: T): T {
   return transform(data);

@@ -6,23 +6,37 @@ import {
   handleTransformFnOrMap,
   parseFrontmatter,
   parseFile,
-} from './utils/file';
+} from './utils';
 import {
-  Export2JSONOptions,
-  Metadata,
   FileData,
+  FileOptions,
+  Metadata,
+  ParseFileFn,
+  ParseFrontmatterFn,
   Transform,
   WriteOptions,
 } from './types';
+import {
+  Export2JSONOptions,
+} from '../files/types';
 
 export default class File implements FileData {
   body: string;
 
   metadata: Metadata;
 
-  async load(src: string): Promise<File> {
-    const { file, frontmatter, body } = await parseFile(src);
-    const parsedFrontmatter = parseFrontmatter(frontmatter);
+  parseFile: ParseFileFn;
+
+  parseFrontmatter: ParseFrontmatterFn;
+
+  constructor(options?: FileOptions) {
+    this.parseFile = options?.parseFile || parseFile;
+    this.parseFrontmatter = options?.parseFrontmatter || parseFrontmatter;
+  }
+
+  load(src: string): File {
+    const { file = {}, frontmatter, body } = this.parseFile(src);
+    const parsedFrontmatter = this.parseFrontmatter(frontmatter);
     const metadata = {
       file,
       ...parsedFrontmatter,
@@ -34,7 +48,7 @@ export default class File implements FileData {
     return this;
   }
 
-  async write(file: PathLike | number, options?: WriteOptions): Promise<void> {
+  write(file: PathLike | number, options?: WriteOptions): void {
     const {
       body: writeBody = true,
       metadata: writeMetadata = true,
@@ -70,7 +84,7 @@ export default class File implements FileData {
     delete writeFileOptions.transform;
 
     try {
-      await fs.writeFileSync(
+      fs.writeFileSync(
         file,
         writeFileStr,
         writeFileOptions,
@@ -80,7 +94,7 @@ export default class File implements FileData {
     }
   }
 
-  async export2JSON(file: PathLike | number, options?: Export2JSONOptions): Promise<void> {
+  export2JSON(file: PathLike | number, options?: Export2JSONOptions): void {
     const { transform, space } = options || {};
     const validTransform = transform && typeof transform === 'function';
 
@@ -95,7 +109,7 @@ export default class File implements FileData {
     delete writeFileOptions.space;
 
     try {
-      await fs.writeFileSync(
+      fs.writeFileSync(
         file,
         JSON.stringify(fileData, null, space),
         writeFileOptions,

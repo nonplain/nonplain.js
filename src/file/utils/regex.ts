@@ -1,15 +1,13 @@
-const body = {
+export const body = {
   whole: /(?<=^---[^]*?^---\n)[^]*/m,
 };
 
-const frontmatter = {
+export const frontmatter = {
   whole: /^---[^]*?^---\n/m,
   sansDelimiters: /(?<=^---\n)[^]*?(?=\n^---)/m,
 };
 
-const regex = {
+export const regex = {
   body,
   frontmatter,
 };
-
-export default regex;

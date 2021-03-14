@@ -7,7 +7,7 @@ import os from 'os';
 /* @ts-ignore */
 import path from 'path';
 
-import { Files, File, Metadata, FileData, regex } from '../dist';
+import Files, { File, Metadata, FileData, regex } from '../dist';
 
 import {
   files as expectedFiles,
@@ -23,56 +23,56 @@ describe('Files', () => {
   describe('load', () => {
     const files = new Files();
 
-    afterEach(async () => {
+    afterEach(() => {
       files.clear();
     });
 
-    test('loads individual file from filepath', async () => {
+    test('loads individual file from filepath', () => {
       const filepath = path.join(__dirname, './fixtures/files/src/Test file 2.md');
 
-      await files.load(filepath);
+      files.load(filepath);
       expect(files.collect().length).toEqual(1);
       expect(files.collect()[0]).toEqual(expectedFiles[1]);
     });
 
-    test('loads files from filepath', async () => {
+    test('loads files from filepath', () => {
       const filepath = path.join(__dirname, './fixtures/files/src');
 
-      await files.load(filepath);
+      files.load(filepath);
       expect(files.collect()).toEqual(expectedFiles);
     });
 
-    test('loads files from glob', async () => {
+    test('loads files from glob', () => {
       const glob = path.join(__dirname, './fixtures/files/src/**/*.md');
 
-      await files.load(glob);
+      files.load(glob);
       expect(files.collect()).toEqual(expectedFiles);
     });
 
-    test('loads files consecutively', async () => {
+    test('loads files consecutively', () => {
       const glob = path.join(__dirname, './fixtures/files/src/**/*.md');
 
-      await files.load(glob);
-      await files.load(glob);
+      files.load(glob);
+      files.load(glob);
       expect(files.collect().length).toEqual((expectedFiles.length * 2));
       expect(files.collect()).toEqual(expectedFiles.concat(expectedFiles));
     });
 
-    test('overwrites current files when `options.overwrite=true`', async () => {
+    test('overwrites current files when `options.overwrite=true`', () => {
       const glob1 = path.join(__dirname, './fixtures/files/src/*1.md');
       const glob2 = path.join(__dirname, './fixtures/files/src/*2.md');
 
-      await files.load(glob1);
-      await files.load(glob2, { overwrite: true });
+      files.load(glob1);
+      files.load(glob2, { overwrite: true });
       expect(files.collect()[0]).toEqual(expectedFiles[1]);
     });
 
-    test('filters new files with `options.filterFilepaths` function', async () => {
+    test('filters new files with `options.filterFilepaths` function', () => {
       const glob = path.join(__dirname, './fixtures/files/src/**/*.md');
 
       const filterFilepaths = (filepath: string) => filepath.includes('2');
 
-      await files.load(glob, { filterFilepaths });
+      files.load(glob, { filterFilepaths });
       expect(files.collect().length).toEqual(1);
       expect(files.collect()[0]).toEqual(expectedFiles[1]);
     });
@@ -82,11 +82,11 @@ describe('Files', () => {
     const glob = path.join(__dirname, './fixtures/files/src/**/*.md');
     const files = new Files();
 
-    beforeEach(async () => {
-      await files.load(glob);
+    beforeEach(() => {
+      files.load(glob);
     });
 
-    test('clears currently loaded files', async () => {
+    test('clears currently loaded files', () => {
       files.clear();
       expect(files.collect()).toEqual([]);
     });
@@ -97,22 +97,22 @@ describe('Files', () => {
     const files = new Files();
     let exportDestination: string;
 
-    beforeAll(async () => {
-      await files.load(glob);
+    beforeAll(() => {
+      files.load(glob);
     });
 
-    beforeEach(async () => {
-      const tmpDir = await fs.mkdtempSync(os.tmpdir());
+    beforeEach(() => {
+      const tmpDir = fs.mkdtempSync(os.tmpdir());
       exportDestination = path.join(tmpDir, 'export.json');
     });
 
-    test('exports file data to JSON', async () => {
-      await files.export2JSON(exportDestination);
-      const exportContent = JSON.parse(await fs.readFileSync(exportDestination).toString());
+    test('exports file data to JSON', () => {
+      files.export2JSON(exportDestination);
+      const exportContent = JSON.parse(fs.readFileSync(exportDestination).toString());
       expect(exportContent).toEqual(JSON.parse(JSON.stringify(expectedFiles)));
     });
 
-    test('exports file data to JSON with transform', async () => {
+    test('exports file data to JSON with transform', () => {
       const transform = ({ body, metadata }: FileData) => ({
         body: body.replace('multiple lines', 'an additional line'),
         metadata: {
@@ -125,8 +125,8 @@ describe('Files', () => {
         },
       });
 
-      await files.export2JSON(exportDestination, { transform });
-      const exportContent = JSON.parse(await fs.readFileSync(exportDestination).toString());
+      files.export2JSON(exportDestination, { transform });
+      const exportContent = JSON.parse(fs.readFileSync(exportDestination).toString());
       expect(exportContent).toEqual(JSON.parse(JSON.stringify(expectedFilesWithTransform)));
     });
   });
@@ -135,15 +135,15 @@ describe('Files', () => {
     const glob = path.join(__dirname, './fixtures/files/src/**/*.md');
     const files = new Files();
 
-    beforeEach(async () => {
-      await files.load(glob);
+    beforeEach(() => {
+      files.load(glob);
     });
 
-    afterEach(async () => {
+    afterEach(() => {
       files.clear();
     });
 
-    test('returns array of currently loaded files', async () => {
+    test('returns array of currently loaded files', () => {
       expect(files.collect()).toEqual(expectedFiles);
     });
   });
@@ -152,15 +152,15 @@ describe('Files', () => {
     const glob = path.join(__dirname, './fixtures/files/src/**/*.md');
     const files = new Files();
 
-    beforeEach(async () => {
-      await files.load(glob);
+    beforeEach(() => {
+      files.load(glob);
     });
 
-    afterEach(async () => {
+    afterEach(() => {
       files.clear();
     });
 
-    test('returns array of currently loaded File instances', async () => {
+    test('returns array of currently loaded File instances', () => {
       expect(files.collectInstances()[0]).toBeInstanceOf(File);
     });
   });
@@ -169,15 +169,15 @@ describe('Files', () => {
     const glob = path.join(__dirname, './fixtures/files/src/**/*.md');
     const files = new Files();
 
-    beforeEach(async () => {
-      await files.load(glob);
+    beforeEach(() => {
+      files.load(glob);
     });
 
-    afterEach(async () => {
+    afterEach(() => {
       files.clear();
     });
 
-    test('iterates over currently loaded files with Array.map()', async () => {
+    test('iterates over currently loaded files with Array.map()', () => {
       const mappedFiles = files.map((file: FileData) => file);
       expect(mappedFiles).toEqual(expectedFiles);
     });
@@ -187,15 +187,15 @@ describe('Files', () => {
     const glob = path.join(__dirname, './fixtures/files/src/**/*.md');
     const files = new Files();
 
-    beforeEach(async () => {
-      await files.load(glob);
+    beforeEach(() => {
+      files.load(glob);
     });
 
-    afterEach(async () => {
+    afterEach(() => {
       files.clear();
     });
 
-    test('iterates over currently loaded files with Array.reduce()', async () => {
+    test('iterates over currently loaded files with Array.reduce()', () => {
       const reducer = (acc: Record<number, FileData>, file: FileData, index: number) => {
         acc[index] = file;
         return acc;
@@ -212,15 +212,15 @@ describe('Files', () => {
     const glob = path.join(__dirname, './fixtures/files/src/**/*.md');
     const files = new Files();
 
-    beforeEach(async () => {
-      await files.load(glob);
+    beforeEach(() => {
+      files.load(glob);
     });
 
-    afterEach(async () => {
+    afterEach(() => {
       files.clear();
     });
 
-    test('transforms files with transform map', async () => {
+    test('transforms files with transform map', () => {
       const transform = {
         body: (body: string) => body.replace('multiple lines', 'an additional line'),
         metadata: {
@@ -233,7 +233,7 @@ describe('Files', () => {
       expect(files.collect()).toEqual(expectedFilesWithTransform);
     });
 
-    test('transforms files with transform function', async () => {
+    test('transforms files with transform function', () => {
       const transform = ({ body, metadata }: FileData) => ({
         body: body.replace('multiple lines', 'an additional line'),
         metadata: {
@@ -254,102 +254,100 @@ describe('Files', () => {
 
 describe('File', () => {
   describe('load', () => {
-    test('loads individual file from filepath', async () => {
+    test('loads individual file from filepath', () => {
       const filepath = path.join(__dirname, './fixtures/files/src/Test file 2.md');
-      const file = await new File().load(filepath);
+      const file = new File().load(filepath);
       expect(file.getData()).toEqual(expectedFiles[1]);
     });
   });
 
   describe('write', () => {
-    test('writes new file with YAML metadata from currently loaded data', async () => {
+    test('writes new file with YAML metadata from currently loaded data', () => {
       const filepath = path.join(__dirname, './fixtures/files/src/Test file 1.md');
-      const file = await new File().load(filepath);
+      const file = new File().load(filepath);
 
-      const tmpDir = await fs.mkdtempSync(os.tmpdir());
+      const tmpDir = fs.mkdtempSync(os.tmpdir());
       const writeDestination = path.join(tmpDir, 'write.md');
 
       const replace = (content: string) => content.replace('T00:00:00.000Z', '');
 
-      await file.write(writeDestination, { replace });
-      const writeContent = await fs.readFileSync(writeDestination).toString()
-      const originalContent = await fs.readFileSync(filepath).toString()
+      file.write(writeDestination, { replace });
+      const writeContent = fs.readFileSync(writeDestination).toString()
+      const originalContent = fs.readFileSync(filepath).toString()
       expect(writeContent).toEqual(originalContent);
     });
 
-    test('writes new file with JSON metadata from currently loaded data', async () => {
+    test('writes new file with JSON metadata from currently loaded data', () => {
       const filepath = path.join(__dirname, './fixtures/files/src/Test file 2.md');
-      const file = await new File().load(filepath);
+      const file = new File().load(filepath);
 
-      const tmpDir = await fs.mkdtempSync(os.tmpdir());
+      const tmpDir = fs.mkdtempSync(os.tmpdir());
       const writeDestination = path.join(tmpDir, 'write.md');
 
-      await file.write(writeDestination, { fmFormat: { format: 'json', space: 2 } });
-      const writeContent = await fs.readFileSync(writeDestination).toString()
-      const originalContent = await fs.readFileSync(filepath).toString()
+      file.write(writeDestination, { fmFormat: { format: 'json', space: 2 } });
+      const writeContent = fs.readFileSync(writeDestination).toString()
+      const originalContent = fs.readFileSync(filepath).toString()
       expect(writeContent).toEqual(originalContent);
     });
 
-    test('writes new file from currently loaded metadata only', async () => {
+    test('writes new file from currently loaded metadata only', () => {
       const filepath = path.join(__dirname, './fixtures/files/src/Test file 2.md');
-      const file = await new File().load(filepath);
+      const file = new File().load(filepath);
 
-      const tmpDir = await fs.mkdtempSync(os.tmpdir());
+      const tmpDir = fs.mkdtempSync(os.tmpdir());
       const writeDestination = path.join(tmpDir, 'write.md');
 
-      await file.write(writeDestination, { body: false, fmFormat: { format: 'json', space: 2 } });
-      const writeContent = await fs.readFileSync(writeDestination).toString()
-      const originalContent = await fs.readFileSync(filepath).toString()
+      file.write(writeDestination, { body: false, fmFormat: { format: 'json', space: 2 } });
+      const writeContent = fs.readFileSync(writeDestination).toString()
+      const originalContent = fs.readFileSync(filepath).toString()
       const originalContentSansBody = originalContent.replace(regex.body.whole, '');
       expect(writeContent).toEqual(originalContentSansBody);
     });
 
-    test('writes new file from currently loaded body only', async () => {
+    test('writes new file from currently loaded body only', () => {
       const filepath = path.join(__dirname, './fixtures/files/src/Test file 2.md');
-      const file = await new File().load(filepath);
+      const file = new File().load(filepath);
 
-      const tmpDir = await fs.mkdtempSync(os.tmpdir());
+      const tmpDir = fs.mkdtempSync(os.tmpdir());
       const writeDestination = path.join(tmpDir, 'write.md');
 
-      await file.write(writeDestination, { metadata: false, fmFormat: { format: 'json', space: 2 } });
-      const writeContent = await fs.readFileSync(writeDestination).toString()
-      const originalContent = await fs.readFileSync(filepath).toString()
+      file.write(writeDestination, { metadata: false, fmFormat: { format: 'json', space: 2 } });
+      const writeContent = fs.readFileSync(writeDestination).toString()
+      const originalContent = fs.readFileSync(filepath).toString()
       const originalContentSansFrontmatter = originalContent.replace(regex.frontmatter.whole, '');
       expect(writeContent).toEqual(originalContentSansFrontmatter);
     });
   });
 
   describe('export2JSON', () => {
-    test('exports individual file data to JSON', async () => {
+    test('exports individual file data to JSON', () => {
       const filepath = path.join(__dirname, './fixtures/files/src/Test file 2.md');
-      const file = await new File().load(filepath);
+      const file = new File().load(filepath);
 
-      const tmpDir = await fs.mkdtempSync(os.tmpdir());
+      const tmpDir = fs.mkdtempSync(os.tmpdir());
       const exportDestination = path.join(tmpDir, 'export.json');
 
-      await file.export2JSON(exportDestination);
-      const exportContent = JSON.parse(await fs.readFileSync(exportDestination).toString())
+      file.export2JSON(exportDestination);
+      const exportContent = JSON.parse(fs.readFileSync(exportDestination).toString())
       expect(exportContent).toEqual(JSON.parse(JSON.stringify(expectedFiles[1])));
     });
 
-    test('exports individual file data to JSON using files.collectInstances() iteration', async () => {
+    test('exports individual file data to JSON using files.collectInstances() iteration', () => {
       const glob = path.join(__dirname, './fixtures/files/src/**/*.md');
-      const files = await new Files().load(glob);
+      const files = new Files().load(glob);
 
       let exportDestinations: string[] = [];
-      const tmpDir = await fs.mkdtempSync(os.tmpdir());
+      const tmpDir = fs.mkdtempSync(os.tmpdir());
       exportDestinations.push(path.join(tmpDir, 'export1.json'));
       exportDestinations.push(path.join(tmpDir, 'export2.json'));
 
       const instances = files.collectInstances();
 
       for (let i = 0; i < instances.length; i++) {
-        await instances[i].export2JSON(exportDestinations[i]);
+        instances[i].export2JSON(exportDestinations[i]);
       }
 
-      const exportContents = await Promise.all(
-        exportDestinations.map(async (d) => JSON.parse(await fs.readFileSync(d).toString()))
-      );
+      const exportContents = exportDestinations.map((d) => JSON.parse(fs.readFileSync(d).toString()));
 
       expect(exportContents).toEqual(JSON.parse(JSON.stringify(expectedFiles)));
     });
@@ -358,12 +356,12 @@ describe('File', () => {
   describe('transform', () => {
     let file: File;
 
-    beforeEach(async () => {
+    beforeEach(() => {
       const filepath = path.join(__dirname, './fixtures/files/src/Test file 2.md');
-      file = await new File().load(filepath);
+      file = new File().load(filepath);
     });
 
-    test('transforms file with transform map', async () => {
+    test('transforms file with transform map', () => {
       const transform = {
         body: (body: string) => body.replace('multiple lines', 'an additional line'),
         metadata: {
@@ -376,7 +374,7 @@ describe('File', () => {
       expect(file.getData()).toEqual(expectedFilesWithTransform[1]);
     });
 
-    test('transforms file with transform map', async () => {
+    test('transforms file with transform map', () => {
       const transform = ({ body, metadata }: FileData) => ({
         body: body.replace('multiple lines', 'an additional line'),
         metadata: {

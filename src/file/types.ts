@@ -12,7 +12,20 @@ export interface FileData {
   metadata: Metadata;
 }
 
-export type ReplaceFn = (data: string) => string;
+export type ParsedFile = {
+  file: ParsedPath,
+  frontmatter: string,
+  body: string,
+};
+
+export type ParseFileFn = (content: string) => ParsedFile;
+
+export type ParseFrontmatterFn = (content: string) => Metadata;
+
+export type FileOptions = {
+  parseFile?: ParseFileFn;
+  parseFrontmatter?: ParseFrontmatterFn;
+};
 
 export type TransformFn<T> = (data: T) => T;
 
@@ -34,6 +47,8 @@ export type FrontmatterFormatConfig = {
   space?: number;
 } | FrontmatterFormat;
 
+export type ReplaceFn = (data: string) => string;
+
 export type WriteOptions = WriteFileOptions & {
   body?: boolean;
   metadata?: boolean;
@@ -41,19 +56,3 @@ export type WriteOptions = WriteFileOptions & {
   transform?: TransformFn<FileData>;
   replace?: ReplaceFn;
 };
-
-export type Export2JSONOptions = WriteFileOptions & {
-  space?: number;
-  transform?: TransformFn<FileData>;
-};
-
-export type FilterFilepathsFn = (filename: string) => boolean;
-
-export type FilesLoadOptions = {
-  filterFilepaths?: FilterFilepathsFn;
-  overwrite?: boolean;
-}
-
-export type MapCallbackFn = (currentValue: FileData, index: number) => any;
-
-export type ReduceCallbackFn = (accumulator: any, currentValue: FileData, index: number) => any;

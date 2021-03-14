@@ -1,27 +1,39 @@
 import fs, { PathLike } from 'fs';
 
-import File from './file';
+import File from '../file';
+import {
+  FileData,
+  ParseFileFn,
+  ParseFrontmatterFn,
+  Transform,
+} from '../file/types';
 import {
   Export2JSONOptions,
-  FileData,
   FilesLoadOptions,
+  FilesOptions,
   MapCallbackFn,
   ReduceCallbackFn,
-  Transform,
 } from './types';
-import { formatPath, getFilepathsFromSrcOrGlob } from './utils/path';
+import { formatPath, getFilepathsFromSrcOrGlob } from './utils';
 
 export default class Files {
   private files: File[];
 
   srcSet: Set<string>;
 
-  constructor() {
+  parseFile: ParseFileFn;
+
+  parseFrontmatter: ParseFrontmatterFn
+
+  constructor(options?: FilesOptions) {
     this.files = [];
     this.srcSet = new Set();
+
+    this.parseFile = options?.parseFile;
+    this.parseFrontmatter = options?.parseFrontmatter;
   }
 
-  async load(src: string, options?: FilesLoadOptions): Promise<Files> {
+  load(src: string, options?: FilesLoadOptions): Files {
     this.addSrc(src);
     src = formatPath(src);
 
@@ -38,7 +50,7 @@ export default class Files {
 
     let srcFilepaths;
     try {
-      srcFilepaths = await getFilepathsFromSrcOrGlob(src);
+      srcFilepaths = getFilepathsFromSrcOrGlob(src);
     } catch (err) {
       throw new Error(`Error while loading file(s) from src: ${src}.\n${err}`);
     }
@@ -47,20 +59,21 @@ export default class Files {
       srcFilepaths = srcFilepaths.filter(filterFilepaths);
     }
 
-    const newFiles = await Promise.all(
-      srcFilepaths.map(async (filepath) => {
-        const file = new File();
+    const newFiles = srcFilepaths.map((filepath: string) => {
+      let file;
 
-        try {
-          await file.load(filepath);
-        } catch (err) {
-          /* eslint-disable-next-line no-console */
-          console.error(`Error while handling file: ${filepath}.\n`, err);
-        }
+      try {
+        file = new File({
+          // parseFile: this.parseFile,
+          // parseFrontmatter: this.parseFrontmatter,
+        }).load(filepath);
+      } catch (err) {
+        /* eslint-disable-next-line no-console */
+        console.error(`Error while handling file: ${filepath}.\n`, err);
+      }
 
-        return file;
-      }),
-    ).then((results) => results.filter((x) => !!x));
+      return file;
+    }).filter((x: File | undefined) => !!x);
 
     this.files = this.files.concat(newFiles);
 
@@ -76,7 +89,7 @@ export default class Files {
     this.srcSet = new Set();
   }
 
-  async export2JSON(file: PathLike | number, options?: Export2JSONOptions): Promise<void> {
+  export2JSON(file: PathLike | number, options?: Export2JSONOptions): void {
     if (!this.files.length) {
       throw new Error('No files loaded.');
     }
@@ -97,7 +110,7 @@ export default class Files {
     delete writeFileOptions.space;
 
     try {
-      await fs.writeFileSync(
+      fs.writeFileSync(
         file,
         JSON.stringify(filesData, null, space),
         writeFileOptions,
