@@ -114,7 +114,7 @@ To parse a nonplain file, load it using the `Files` class. If you only want to o
 Using `Files`:
 
 ```js
-const { Files } = require("nonplain");
+const Files = require("nonplain").default;
 
 // you can use a glob or a filepath
 const files = new Files().load('/path/to/dir/**/*.md');
