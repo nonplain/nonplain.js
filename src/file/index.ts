@@ -4,6 +4,7 @@ import {
   composeFrontmatterString,
   handleTransformFn,
   handleTransformFnOrMap,
+  isValidFn,
   parseFrontmatter,
   parseFile,
 } from './utils';
@@ -35,7 +36,7 @@ export default class File implements FileData {
   }
 
   load(src: string): File {
-    const { file = {}, frontmatter, body } = this.parseFile(src);
+    const { file, frontmatter, body } = this.parseFile(src);
     const parsedFrontmatter = this.parseFrontmatter(frontmatter);
     const metadata = {
       file,
@@ -56,15 +57,15 @@ export default class File implements FileData {
       transform,
       replace,
     } = options || {};
-    const validTransform = transform && typeof transform === 'function';
-    const validReplace = replace && typeof replace === 'function';
+    const validTransform = isValidFn(transform);
+    const validReplace = isValidFn(replace);
 
     if (transform && !validTransform) {
       throw new Error('TypeError: transform must be a function');
     }
 
     if (replace && !validReplace) {
-      throw new Error('TypeError: transform must be a function');
+      throw new Error('TypeError: replace must be a function');
     }
 
     const { metadata, body } = validTransform ? transform(this.getData()) : this.getData();

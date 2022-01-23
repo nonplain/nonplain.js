@@ -7,6 +7,7 @@ import {
   ParseFrontmatterFn,
   Transform,
 } from '../file/types';
+import { isValidFn } from '../file/utils';
 import {
   Export2JSONOptions,
   FilesLoadOptions,
@@ -38,7 +39,7 @@ export default class Files {
     src = formatPath(src);
 
     const { filterFilepaths, overwrite = false } = options || {};
-    const validFilterFilepaths = filterFilepaths && typeof filterFilepaths === 'function';
+    const validFilterFilepaths = isValidFn(filterFilepaths);
 
     if (overwrite) {
       this.clear();
@@ -95,7 +96,7 @@ export default class Files {
     }
 
     const { transform, space } = options || {};
-    const validTransform = transform && typeof transform === 'function';
+    const validTransform = isValidFn(transform);
 
     if (transform && !validTransform) {
       throw new Error('TypeError: transform must be a function');
