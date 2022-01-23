@@ -1,6 +1,6 @@
 {
   "name": "nonplain",
-  "version": "0.0.5",
+  "version": "0.1.0",
   "description": "Plaintext files, with metadata",
   "homepage": "https://github.com/nonplain/nonplain.js#readme",
   "repository": "github:nonplain/nonplain.js",
