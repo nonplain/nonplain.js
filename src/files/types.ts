@@ -20,6 +20,6 @@ export type FilesLoadOptions = {
 
 export type FilesOptions = FileOptions;
 
-export type MapCallbackFn = (currentValue: FileData, index: number) => any;
+export type FilterFn = (file: FileData, index: number) => boolean;
 
-export type ReduceCallbackFn = (accumulator: any, currentValue: FileData, index: number) => any;
+export type SortCompareFn = (a: FileData, b: FileData) => number;

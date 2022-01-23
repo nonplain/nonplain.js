@@ -1,6 +1,7 @@
 ---
 name: Test file 1
 when: 2021-01-01
+sortKey: z
 ---
 
 Test file 1 body

@@ -12,6 +12,7 @@ import Files, { File, Metadata, FileData, regex } from '../dist';
 import {
   files as expectedFiles,
   withTransform as expectedFilesWithTransform,
+  sortedBySortKey as expectedFilesSortedBySortKey,
 } from './fixtures/files/expected';
 
 describe('Files', () => {
@@ -164,7 +165,7 @@ describe('Files', () => {
     });
   });
 
-  describe('map', () => {
+  describe('filter', () => {
     const glob = path.join(__dirname, './fixtures/files/src/**/*.md');
     const files = new Files();
 
@@ -176,13 +177,18 @@ describe('Files', () => {
       files.clear();
     });
 
-    test('iterates over currently loaded files with Array.map()', () => {
-      const mappedFiles = files.map((file: FileData) => file);
-      expect(mappedFiles).toEqual(expectedFiles);
+    test('filters files according to filterFn', () => {
+      const filterFn = (file: any) => {
+        return file.metadata.name.includes('1');
+      };
+
+      files.filter(filterFn);
+
+      expect(files.collect()).toEqual([expectedFiles[0]]);
     });
   });
 
-  describe('reduce', () => {
+  describe('sort', () => {
     const glob = path.join(__dirname, './fixtures/files/src/**/*.md');
     const files = new Files();
 
@@ -194,16 +200,14 @@ describe('Files', () => {
       files.clear();
     });
 
-    test('iterates over currently loaded files with Array.reduce()', () => {
-      const reducer = (acc: Record<number, FileData>, file: FileData, index: number) => {
-        acc[index] = file;
-        return acc;
+    test('sorts files according to compareFn', () => {
+      const compareFn = (a: any, b: any) => {
+        return a.metadata.sortKey.localeCompare(b.metadata.sortKey);
       };
 
-      const reducedExpected = expectedFiles.reduce(reducer, {});
-      const reducedFiles = files.reduce(reducer, {});
+      files.sort(compareFn);
 
-      expect(reducedFiles).toEqual(reducedExpected);
+      expect(files.collect()).toEqual(expectedFilesSortedBySortKey);
     });
   });
 

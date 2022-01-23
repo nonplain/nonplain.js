@@ -16,6 +16,7 @@ const base = [
         root: '/',
       },
       name: 'Test file 1',
+      sortKey: 'z',
     },
   },
   {
@@ -30,13 +31,14 @@ const base = [
         root: '/',
       },
       name: 'Test file 2',
+      sortKey: 'a',
     },
   },
 ];
 
-export const files = base;
+export const files = [...base];
 
-export const withTransform = base.map(({ body, metadata }: FileData) => ({
+export const withTransform = [...base].map(({ body, metadata }: FileData) => ({
   body: body.replace('multiple lines', 'an additional line'),
   metadata: {
     ...metadata,
@@ -47,3 +49,6 @@ export const withTransform = base.map(({ body, metadata }: FileData) => ({
     project: 'my project',
   },
 }));
+
+export const sortedBySortKey = [...base]
+  .sort((a, b) => a.metadata.sortKey.localeCompare(b.metadata.sortKey));

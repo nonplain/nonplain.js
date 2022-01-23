@@ -12,8 +12,8 @@ import {
   Export2JSONOptions,
   FilesLoadOptions,
   FilesOptions,
-  MapCallbackFn,
-  ReduceCallbackFn,
+  FilterFn,
+  SortCompareFn,
 } from './types';
 import { formatPath, getFilepathsFromSrcOrGlob } from './utils';
 
@@ -121,12 +121,12 @@ export default class Files {
     }
   }
 
-  map(callback: MapCallbackFn): Array<any> {
-    return this.collect().map(callback);
+  filter(filterFn: FilterFn = () => false): void {
+    this.files = this.files.filter((file, index) => filterFn(file.getData(), index));
   }
 
-  reduce<T>(callback: ReduceCallbackFn, initialValue?: T): T {
-    return this.collect().reduce(callback, initialValue);
+  sort(compareFn: SortCompareFn = () => 0): void {
+    this.files.sort((fileA, fileB) => compareFn(fileA.getData(), fileB.getData()));
   }
 
   collect(): FileData[] {
