@@ -1,6 +1,7 @@
 {
   "extends": "@tsconfig/node14/tsconfig.json",
   "compilerOptions": {
+    // TODO: "alwaysStrict": true,
     "declaration": true,
     "outDir": "dist",
     "strictNullChecks": false
